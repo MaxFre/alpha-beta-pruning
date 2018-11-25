@@ -6,7 +6,9 @@ public class OthelloGame {
 	private Board board;
 	private GameState state;
 	private GameMode mode;
-	private Value turn;
+	//private Value turn;
+	private String turn;
+	
 	
 	private int ROWS = 4;
 	private int COLS = 4;
@@ -15,7 +17,8 @@ public class OthelloGame {
 	private static Scanner input = new Scanner(System.in);
 	
 	public OthelloGame() {
-		board = new Board(ROWS, COLS);
+		//board = new Board(ROWS, COLS);
+		board = new Board(ROWS, COLS, "TEST");
 		chooseGamemode();
 		setStartingPlayer();
 		state = GameState.IN_PROGRESS;
@@ -75,7 +78,8 @@ public class OthelloGame {
 		boolean isInputValid = false;
 		
 		if(mode == GameMode.HumanVSAi) {
-			if(turn == Value.BLACK) {
+			if(turn.equals("[B]")) {
+			//if(turn == Value.BLACK) {
 				//AGENTS TURN 
 				//DO STUFF
 				
@@ -83,7 +87,8 @@ public class OthelloGame {
 				//if (tryToFlip(row, col, false))
 				//isInputValid = true;		
 			}
-			else if (turn == Value.WHITE) {
+			if(turn.equals("[W]")) {
+			//else if (turn == Value.WHITE) {
 				while (!isInputValid) {
 					int row = getBoundedNumber("Row", 0, ROWS);
 					int col = getBoundedNumber("Column", 0, COLS);
@@ -113,20 +118,26 @@ public class OthelloGame {
 	public boolean canPlay() {
 		for (int r = 0; r < ROWS; r++)
 			for (int c = 0; c < COLS; c++)
-				if (board.cells[r][c].value == Value.BLANK && tryToFlip(r, c, true))
+				if (board.cells[r][c].equals("[ ]") && tryToFlip(r, c, true))
+				//if (board.cells[r][c].value == Value.BLANK && tryToFlip(r, c, true))
 					return true;
 		return false;		
 	}
 	
 	public void putDisc(int row, int col, Value val) {
-		board.cells[row][col].set(val);
+		//board.cells[row][col].set(val);
+	}
+	
+	public void putDisc(int row, int col, String value) {
+		board.cells[row][col] = value;
 	}
 	
 	public void changeTurn() {
-		turn = (turn == Value.BLACK ? Value.WHITE : Value.BLACK);
+		turn = (turn.equals("[B]") ? "[W]" : "[B]");
+		//turn = (turn == Value.BLACK ? Value.WHITE : Value.BLACK);
 	}
-	
-	public boolean tryToFlip(int row, int col, boolean dontFlip) {
+	//Riktiga koden med Cell klassen
+	/*public boolean tryToFlip(int row, int col, boolean dontFlip) {
 		boolean hasFlipped = false;
 		Value opposite = (turn == Value.BLACK ? Value.WHITE : Value.BLACK);
 		Value next;
@@ -279,6 +290,165 @@ public class OthelloGame {
 		}
 		return hasFlipped;
 
+	}*/
+	
+	public boolean tryToFlip(int row, int col, boolean dontFlip) {
+		boolean hasFlipped = false;
+		String opposite = (turn.equals("[B]") ? "[W]" : "[B]"); 
+		String next;
+		
+		
+		//Value opposite = (turn == Value.BLACK ? Value.WHITE : Value.BLACK);
+		//Value next;
+		
+		if (board.cells[row][col].equals("[ ]")) {
+			
+			// try to flip north direction
+			if (row > 1 && board.cells[row-1][col].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentRow = row;
+				do {
+					next = board.cells[--currentRow][col];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) {
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int r = row; r > currentRow ; r--)  
+							putDisc(r, col, turn);
+					} 
+				} while (currentRow-1 >= 0 && !next.equals("[ ]"));
+			}
+			
+			// try to flip northeast direction
+			if (row > 1 && col < COLS-2 && board.cells[row-1][col+1].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentRow = row, currentCol = col;
+				do {
+					next = board.cells[--currentRow][++currentCol];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) { 
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int r = row, c = col; r > currentRow && c < currentCol ; r--, c++)  
+							putDisc(r, c, turn);
+					}
+				} while (currentRow-1 >= 0 && currentCol < COLS-1 && !next.equals("[ ]"));
+			}
+			
+			// try to flip east direction
+			if (col < COLS-2 && board.cells[row][col+1].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentCol = col;
+				do {
+					next = board.cells[row][++currentCol];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) { 
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int c = col; c < currentCol; c++)  
+							putDisc(row, c, turn);
+					}
+				} while (currentCol < COLS-1 && !next.equals("[ ]"));
+			}
+			
+			// try to flip southeast direction
+			if (row < ROWS-2 && col < COLS-2 && board.cells[row+1][col+1].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentRow = row, currentCol = col;
+				do {
+					next = board.cells[++currentRow][++currentCol];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) { 
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int r = row, c = col; r < currentRow && c < currentCol ; r++, c++)  
+							putDisc(r, c, turn);
+					}
+				} while (currentRow < ROWS-1 && currentCol < COLS-1 && !next.equals("[ ]"));
+			}
+			
+			// try to flip south direction
+			if (row < ROWS-2 && board.cells[row+1][col].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentRow = row;
+				do {
+					next = board.cells[++currentRow][col];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) { 
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int r = row; r < currentRow; r++)  
+							putDisc(r, col, turn);
+					}
+				} while (currentRow < ROWS-1 && !next.equals("[ ]"));
+			}
+			
+			// try to flip southwest direction
+			if (row < ROWS-2 && col > 1 && board.cells[row+1][col-1].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentRow = row, currentCol = col;
+				do {
+					next = board.cells[++currentRow][--currentCol];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) { 
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int r = row, c = col; r < currentRow && c > currentCol; r++, c--) 
+							putDisc(r, c, turn);
+					}
+				} while (currentRow < ROWS-1 && currentCol > 0 && !next.equals("[ ]"));
+			}
+			
+			// try to flip west direction
+			if (col > 1 && board.cells[row][col-1].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentCol = col;
+				do {
+					next = board.cells[row][--currentCol];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) { 
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int c = col; c > currentCol; c--) 
+							putDisc(row, c, turn);
+					}
+				} while (currentCol > 0 && !next.equals("[ ]"));
+			}
+			
+			// try to flip northwest direction
+			if (row > 1 && col > 1 && board.cells[row-1][col-1].equals(opposite)) {
+				boolean neighborIsOpposite = false;
+				int currentRow = row, currentCol = col;
+				do {
+					next = board.cells[--currentRow][--currentCol];
+					if (next == opposite) { 
+						neighborIsOpposite= true;
+					} else if (next == turn && neighborIsOpposite) { 
+						if (dontFlip)	
+							return true;
+						hasFlipped = true;
+						for (int r = row, c = col; r > currentRow && c > currentCol; r--, c--) 
+							putDisc(r, c, turn);
+					}
+				} while (currentRow > 0 && currentCol > 0 && !next.equals("[ ]"));
+			}
+		}
+		return hasFlipped;
+
 	}
 	
 	public int getBoundedNumber(String message, int min, int max) {
@@ -323,7 +493,8 @@ public class OthelloGame {
 			String starting = input.next();
 			if (starting.equalsIgnoreCase("b") || starting.equalsIgnoreCase("w")) {
 				isInputValid = true;
-				turn = (starting.equalsIgnoreCase("b") ? Value.BLACK : Value.WHITE);
+				turn = (starting.equalsIgnoreCase("b") ? "[B]" : "[W]");
+				//turn = (starting.equalsIgnoreCase("b") ? Value.BLACK : Value.WHITE);
 			} else {
 				System.out.println("Please type 'b' or 'w'.");
 			}
