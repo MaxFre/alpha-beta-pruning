@@ -8,10 +8,12 @@ public class Node {
 	private int x;
 	private int y;
 	private String[][] savedCurrentState;
+	private boolean root = false;
 	
-	public Node(int x, int y, String[][] currentState){
+	public Node(int x, int y, String[][] currentState, boolean root){
 		this.x = x;
 		this.y = y;
+		this.root = root;
 		
 		savedCurrentState =  new String[4][4];
 		
@@ -22,7 +24,9 @@ public class Node {
 		}
 	}
 	
-	
+	public boolean isRoot(){
+		return root;
+	}
 	
 	public String[][] getCurrentState(){
 		return savedCurrentState;
@@ -50,6 +54,7 @@ public class Node {
 	}
 	
 	public int getWhiteCount(){
+		whiteCount = 0;
 		for (int i = 0; i < savedCurrentState.length; i++) {       // copy of current state to use later
 			for (int b = 0; b < savedCurrentState.length; b++) {
 				if(savedCurrentState[i][b].equals("[W]")){

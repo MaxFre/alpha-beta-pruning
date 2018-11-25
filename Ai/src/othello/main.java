@@ -6,15 +6,25 @@ import java.util.LinkedList;
 
 public class main {
 
-	ArrayList<Node> blackAvailableMoves = new ArrayList<Node>();	
-	ArrayList<Node> whiteAvailableMoves = new ArrayList<Node>();
+
+	ArrayList<Node> blackAvailableMoves1 = new ArrayList<Node>();	
+	ArrayList<Node> blackAvailableMoves2 = new ArrayList<Node>();
+	ArrayList<Node> whiteAvailableMoves1 = new ArrayList<Node>();
+	ArrayList<Node> whiteAvailableMoves2 = new ArrayList<Node>();
 	ArrayList<Node> endNodes = new ArrayList<Node>();
 	Node node;
 	String board[][] = new String[4][4];
 	int maxDepth = 2;
-	boolean first = true;
 	boolean whiteTurn = false;
 	boolean depthEnd = false;
+	int depth = 0;
+	boolean first = true;
+	boolean second = false;
+	boolean third = false;
+	boolean fourth = false;
+	int bestOption;
+	int index;
+	
 	
 	public main() {
 
@@ -28,86 +38,171 @@ public class main {
 
 	//	LinkedList<Node> tree = null;
 
-		blackAvailableMoves.clear();
+
 		// board, startX, startY, whatColor
-		Node root = new Node(0,0, board);
-		addNewMove(board, 0, 0, whiteTurn, root);	         	//Sends current board to find available moves
-		System.out.println(blackAvailableMoves.size());		// how many moves available
+		Node root = new Node(0,0, board, true);
+		
+		first = true;
+		addNewMove(board, 0, 0, whiteTurn, root); // gets black1
+		first = false;
+
+		for (int whiteFirst = 0; whiteFirst < blackAvailableMoves1.size(); whiteFirst++) {
+			second = true;
+			whiteTurn = true;
+			addNewMove(blackAvailableMoves1.get(whiteFirst).getCurrentState(), 0, 0, whiteTurn, blackAvailableMoves1.get(whiteFirst)); // gets white1
+			second = false;
+			whiteTurn = false;
+		}
+		for (int blackSecond = 0; blackSecond < whiteAvailableMoves1.size(); blackSecond++) {
+
+			third = true;
+			whiteTurn = false;
+			addNewMove(whiteAvailableMoves1.get(blackSecond).getCurrentState(), 0, 0, whiteTurn, whiteAvailableMoves1.get(blackSecond)); // gets black2
+			third = false;
+			whiteTurn = true;
+		}
+		for (int whiteSecond = 0; whiteSecond < blackAvailableMoves2.size(); whiteSecond++) {
+
+			fourth = true;
+			whiteTurn = true;
+			addNewMove(blackAvailableMoves2.get(whiteSecond).getCurrentState(), 0, 0, whiteTurn, blackAvailableMoves2.get(whiteSecond)); // gets white2
+			fourth = false;
+			whiteTurn = false;
+		}
+								
 
 		
+		System.out.println("blackAvailableMoves1 - " + blackAvailableMoves1.size());		// how many moves available
+		System.out.println("whiteAvailableMoves1 - " + whiteAvailableMoves1.size());
+		System.out.println("blackAvailableMoves2 - " + blackAvailableMoves2.size());
+		System.out.println("whiteAvailableMoves2 - " + whiteAvailableMoves2.size());
+	
+		whiteTurn = false;
+		bestOption = Integer.MAX_VALUE;																	// starting value
+		index = 0;																						// Starting index
 		
-		for (int b = 0; b < blackAvailableMoves.size(); b++) {
-//			System.out.println("---------");
-//			System.out.println("Turn1");
-//			printBoard(blackAvailableMoves.get(b).getCurrentState());
-//			System.out.println(b + 1);	
-			b++;
-		}
 		
-		addNewMove(blackAvailableMoves.get(0).getCurrentState(), 0, 0, true, blackAvailableMoves.get(0));	
-		for (int b = 0; b < whiteAvailableMoves.size(); b++) {
-//			System.out.println("---------");
-//			System.out.println("Turn2");
-//			printBoard(whiteAvailableMoves.get(b).getCurrentState());
-//			System.out.println(b + 1);		
-			b++;
-		}
-		blackAvailableMoves.clear();
-		addNewMove(whiteAvailableMoves.get(0).getCurrentState(), 0, 0, false, whiteAvailableMoves.get(0));	
-		for (int b = 0; b < blackAvailableMoves.size(); b++) {
-			System.out.println("---------");
-			System.out.println("Turn3");
-			printBoard(blackAvailableMoves.get(b).getCurrentState());
-			System.out.println(b + 1);		
-			b++;
-		}
-		depthEnd = true;
-		whiteAvailableMoves.clear();
-		addNewMove(blackAvailableMoves.get(0).getCurrentState(), 0, 0, true, blackAvailableMoves.get(0));	
-		for (int b = 0; b < whiteAvailableMoves.size(); b++) {
-			System.out.println("---------");
-			System.out.println("Turn4");
-			System.out.println("End: " + whiteAvailableMoves.get(b).getEndNode());
-			System.out.println("whiteCount: " + whiteAvailableMoves.get(b).getWhiteCount());
-			printBoard(whiteAvailableMoves.get(b).getCurrentState());
-			if(whiteAvailableMoves.get(b).getEndNode()){
-				endNodes.add(whiteAvailableMoves.get(b));
+
+		minMax();
+		
+		System.out.println();
+		System.out.println("bestOption - " + bestOption);
+		System.out.println("index - " + index);
+		
+		int bestMoveY = -1;
+		int bestMoveX = -1;		
+		boolean notFoundRoot =  true;
+		
+		
+		Node node = whiteAvailableMoves2.get(index);		// finds the best node
+
+		
+
+		
+		while(notFoundRoot){								// walks up the tree to find from the best node until root is found, 
+			if(!node.fromNode().isRoot()){					// then takes the first node on the path to best node
+				 node = node.fromNode();
 			}
-		
-			System.out.println(b + 1);	
+						
+			if(node.fromNode().isRoot()){		
+				bestMoveX = node.getX();
+				bestMoveY = node.getY();
+				notFoundRoot = false;
+			}
 		}
-//		whiteAvailableMoves.clear();
-//		for (int b = 0; b < blackAvailableMoves.size(); b++) {
-//			System.out.println("---------");
-//			System.out.println("Turn2");
-//		addNewMove(blackAvailableMoves.get(b).getCurrentState(), 0, 0, true);
-//		printBoard(whiteAvailableMoves.get(b).getCurrentState());
-//		}
-//		blackAvailableMoves.clear();
-//		for (int b = 0; b < whiteAvailableMoves.size(); b++) {		
-//			addNewMove(whiteAvailableMoves.get(b).getCurrentState(), 0, 0, false);
-//			System.out.println("---------");
-//			System.out.println("Turn3");
-//			printBoard(blackAvailableMoves.get(b).getCurrentState());
-//			System.out.println(b + 1);		
-//		}
+		
+		System.out.println("-----");
+		printBoard(node.getCurrentState());
+		System.out.println("best move - X:" + bestMoveX + "  Y:" + bestMoveY);
+		
+		System.out.println("--DONE---");
+		
+	}
+	
+	public void minMax(){
+		
+		Node bestLeafComesFromThisNode = null;
+		
+		for(int findBestOption = 0;  findBestOption<whiteAvailableMoves2.size(); findBestOption++){			//check what states thats the best.
+			if(whiteAvailableMoves2.get(findBestOption).getWhiteCount()<bestOption){						// searching for lower value, cuz black wants as low whiteCount as possible
+				bestOption = whiteAvailableMoves2.get(findBestOption).getWhiteCount();
+				index = findBestOption;
+				bestLeafComesFromThisNode = whiteAvailableMoves2.get(findBestOption).fromNode();
+			}
+		}
+		
+		int secondBestFromThisBranch = Integer.MAX_VALUE;	
+		int indexOfSecond = 0;
+		
+		for(int findBestOption = 0;  findBestOption<whiteAvailableMoves2.size(); findBestOption++){			//check what states thats the best.
+			if(whiteAvailableMoves2.get(findBestOption).getWhiteCount()<secondBestFromThisBranch && whiteAvailableMoves2.get(findBestOption).fromNode() == bestLeafComesFromThisNode ){	
+				secondBestFromThisBranch = whiteAvailableMoves2.get(findBestOption).getWhiteCount();
+				indexOfSecond = findBestOption;				
+			}
+		}
+		
+		
+		Node secondBest = new Node(0, 0, board, false);
+		Node bestNode = whiteAvailableMoves2.get(0);
+		
+	
+		// endNode (4)
+		for (int findBestOption = 0; findBestOption < whiteAvailableMoves2.size(); findBestOption++) {
+
+			if (whiteAvailableMoves2.get(findBestOption).getWhiteCount() > bestNode.getWhiteCount()) {
+				Node tempNode = bestNode.fromNode();
+				boolean isEnd =   bestNode.getEndNode();
+				int x = bestNode.getX();
+				int y  = bestNode.getY();
+				String[][] state = bestNode.getCurrentState();
+				bestNode = whiteAvailableMoves2.get(findBestOption);
+				secondBest = new Node(x, y, state, false);				
+				secondBest.setFromNode(bestNode.fromNode());
+				secondBest.setEndNode(bestNode.getEndNode());
+				
+			
+			}
+
+//			if (whiteAvailableMoves2.get(findBestOption).getWhiteCount() > secondBest.getWhiteCount()
+//					&& secondBest.fromNode() != whiteAvailableMoves2.get(findBestOption).fromNode()) {
+//
+//				secondBest = whiteAvailableMoves2.get(findBestOption);
+//			}
+
+		}
+		System.out.println(secondBest + "    " + bestNode );
+		
+		// Child (3)
+		for (int findBestOption = 0; findBestOption < blackAvailableMoves2.size(); findBestOption++) {
+			
+		}
+		
+		
+		// Child (2)
+		for (int findBestOption = 0; findBestOption < whiteAvailableMoves1.size(); findBestOption++) {
+			
+		}
+		
+		// Child (1)
+		for (int findBestOption = 0; findBestOption < blackAvailableMoves1.size(); findBestOption++) {
+			
+		}
+		
 	}
 	
 	public void addNewMove(String[][] state, int x, int y, boolean whiteTurn, Node fromNode) {
 		// For loop to check ok moves, create list.
-//		 System.out.println("finding new move " + x + " " + y);
-		 
+
 		
-		String[][] newState = new String[4][4];
+
 		
+		String[][] newState = new String[4][4];		
 				for (int i = 0; i < state.length; i++) {       // copy of current state to use later
 					for (int b = 0; b < state.length; b++) {
 						newState[i][b] = state[i][b];
 					}
 				}
-				System.out.println("test");
-				printBoard(state);
-				
+
 				for (int i = 0; i < state.length; i++) { // find first empty and add new symbol
 					for (int b = 0; b < state.length; b++) {
 						if (newState[i][b].equals("[ ]")) {
@@ -116,19 +211,34 @@ public class main {
 							} else {
 								newState[i][b] = "[B]";
 							}
-							Node newNode = new Node(i, b, newState);
+							Node newNode = new Node(i, b, newState, false);
+							newNode.setFromNode(fromNode);
 							if(depthEnd){
 								newNode.setEndNode(true);
 							}
-							newNode.setFromNode(fromNode);
+							
 							
 							if(whiteTurn){
-								whiteAvailableMoves.add(newNode);						
-								newState[i][b] = "[ ]";
+								if(second  && !fourth){
+									whiteAvailableMoves1.add(newNode);						
+									newState[i][b] = "[ ]";
+								}
+								if(fourth){
+									whiteAvailableMoves2.add(newNode);						
+									newState[i][b] = "[ ]";
+								}
+								
 							}
 							else{
-							blackAvailableMoves.add(newNode);						
-							newState[i][b] = "[ ]";
+								if(first && !third){
+									blackAvailableMoves1.add(newNode);						
+									newState[i][b] = "[ ]";
+								}
+								if(third && !fourth){
+									blackAvailableMoves2.add(newNode);						
+									newState[i][b] = "[ ]";
+//									System.out.println(blackAvailableMoves2.size());
+								}
 							}
 						}
 
