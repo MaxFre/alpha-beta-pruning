@@ -191,21 +191,28 @@ public class main {
 	}
 	
 	public void addNewMove(String[][] state, int x, int y, boolean whiteTurn, Node fromNode) {
+		
+		
+		
 		// For loop to check ok moves, create list.
 
-		
-
+	
 		
 		String[][] newState = new String[4][4];		
-				for (int i = 0; i < state.length; i++) {       // copy of current state to use later
+				for (int i = 0; i < state.length; i++) {     	  // copy of current state to use later
 					for (int b = 0; b < state.length; b++) {
 						newState[i][b] = state[i][b];
 					}
 				}
 
-				for (int i = 0; i < state.length; i++) { // find first empty and add new symbol
+				for (int i = 0; i < state.length; i++) { 		// find first empty and add new symbol
 					for (int b = 0; b < state.length; b++) {
 						if (newState[i][b].equals("[ ]")) {
+							
+							// SEE IF FLIP I,B = X,Y
+							// sends XY and see if its a okey move. 
+							
+							
 							if (whiteTurn) {
 								newState[i][b] = "[W]";
 							} else {
