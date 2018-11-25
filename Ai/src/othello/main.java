@@ -24,7 +24,7 @@ public class main {
 	boolean fourth = false;
 	int bestOption;
 	int index;
-	
+	GameLogic gameLogic = new GameLogic();
 	
 	public main() {
 
@@ -77,9 +77,12 @@ public class main {
 		System.out.println("blackAvailableMoves2 - " + blackAvailableMoves2.size());
 		System.out.println("whiteAvailableMoves2 - " + whiteAvailableMoves2.size());
 	
+		
+
+		
+		
 		whiteTurn = false;
-		bestOption = Integer.MAX_VALUE;																	// starting value
-		index = 0;																						// Starting index
+		
 		
 		
 
@@ -94,8 +97,8 @@ public class main {
 		boolean notFoundRoot =  true;
 		
 		
-		Node node = whiteAvailableMoves2.get(index);		// finds the best node
-
+		Node node = blackAvailableMoves1.get(index);		// finds the best node
+		printBoard(node.getCurrentState());
 		
 
 		
@@ -112,7 +115,7 @@ public class main {
 		}
 		
 		System.out.println("-----");
-		printBoard(node.getCurrentState());
+//		printBoard(node.getCurrentState());
 		System.out.println("best move - X:" + bestMoveX + "  Y:" + bestMoveY);
 		
 		System.out.println("--DONE---");
@@ -120,73 +123,121 @@ public class main {
 	}
 	
 	public void minMax(){
+					
+		bestOption = Integer.MIN_VALUE;																	// starting value
+		index = 0;																						// Starting index
 		
-		Node bestLeafComesFromThisNode = null;
+		Node whiteSecondBest = new Node(0, 0, board, false);
+		Node whitesBestNode = whiteAvailableMoves2.get(0);
 		
-		for(int findBestOption = 0;  findBestOption<whiteAvailableMoves2.size(); findBestOption++){			//check what states thats the best.
-			if(whiteAvailableMoves2.get(findBestOption).getWhiteCount()<bestOption){						// searching for lower value, cuz black wants as low whiteCount as possible
-				bestOption = whiteAvailableMoves2.get(findBestOption).getWhiteCount();
-				index = findBestOption;
-				bestLeafComesFromThisNode = whiteAvailableMoves2.get(findBestOption).fromNode();
-			}
-		}
-		
-		int secondBestFromThisBranch = Integer.MAX_VALUE;	
-		int indexOfSecond = 0;
-		
-		for(int findBestOption = 0;  findBestOption<whiteAvailableMoves2.size(); findBestOption++){			//check what states thats the best.
-			if(whiteAvailableMoves2.get(findBestOption).getWhiteCount()<secondBestFromThisBranch && whiteAvailableMoves2.get(findBestOption).fromNode() == bestLeafComesFromThisNode ){	
-				secondBestFromThisBranch = whiteAvailableMoves2.get(findBestOption).getWhiteCount();
-				indexOfSecond = findBestOption;				
-			}
-		}
-		
-		
-		Node secondBest = new Node(0, 0, board, false);
-		Node bestNode = whiteAvailableMoves2.get(0);
-		
+		int secondbestValue = Integer.MIN_VALUE;
 	
 		// endNode (4)
-		for (int findBestOption = 0; findBestOption < whiteAvailableMoves2.size(); findBestOption++) {
-
-			if (whiteAvailableMoves2.get(findBestOption).getWhiteCount() > bestNode.getWhiteCount()) {
-				Node tempNode = bestNode.fromNode();
-				boolean isEnd =   bestNode.getEndNode();
-				int x = bestNode.getX();
-				int y  = bestNode.getY();
-				String[][] state = bestNode.getCurrentState();
-				bestNode = whiteAvailableMoves2.get(findBestOption);
-				secondBest = new Node(x, y, state, false);				
-				secondBest.setFromNode(bestNode.fromNode());
-				secondBest.setEndNode(bestNode.getEndNode());
+		for (int findBestOption = 1; findBestOption < whiteAvailableMoves2.size(); findBestOption++) {
+						
+			if (whiteAvailableMoves2.get(findBestOption).getWhiteCount() > whitesBestNode.getWhiteCount()) {		// WHITES BEST
+				if(secondbestValue<whitesBestNode.getWhiteCount() && whitesBestNode.fromNode() != whiteAvailableMoves2.get(findBestOption).fromNode()){
+					whiteSecondBest = whiteAvailableMoves2.get(findBestOption);
+					secondbestValue = whiteSecondBest.getWhiteCount();
+					System.out.println("--this---");
+				}
+				bestOption = whiteAvailableMoves2.get(findBestOption).getWhiteCount();
+				whitesBestNode = whiteAvailableMoves2.get(findBestOption);
+				index = findBestOption;
 				
-			
+				
+				if (whiteAvailableMoves2.get(findBestOption).getWhiteCount() > secondbestValue && whitesBestNode.fromNode() != whiteAvailableMoves2.get(findBestOption).fromNode()) {	
+					whiteSecondBest = whiteAvailableMoves2.get(findBestOption);
+					System.out.println("--this---");
+				}
 			}
 
-//			if (whiteAvailableMoves2.get(findBestOption).getWhiteCount() > secondBest.getWhiteCount()
-//					&& secondBest.fromNode() != whiteAvailableMoves2.get(findBestOption).fromNode()) {
-//
-//				secondBest = whiteAvailableMoves2.get(findBestOption);
-//			}
 
 		}
-		System.out.println(secondBest + "    " + bestNode );
+		
+		
+		printBoard(whitesBestNode.getCurrentState());
+		System.out.println("-----");
+		printBoard(whiteSecondBest.getCurrentState());
+		System.out.println("whites best last");
+		
+		
+		bestOption = Integer.MAX_VALUE;																	// starting value
+		index = 0;			
+		int BlacksSecondbestValue = Integer.MAX_VALUE;		
+		Node blacksSecondBest = new Node(0, 0, board, false);
+		Node blacksBestNode = blackAvailableMoves2.get(0);
 		
 		// Child (3)
-		for (int findBestOption = 0; findBestOption < blackAvailableMoves2.size(); findBestOption++) {
+		for (int findBestOption = 1; findBestOption < blackAvailableMoves2.size(); findBestOption++) {		// blacks best
 			
+			if (blackAvailableMoves2.get(findBestOption).getWhiteCount() < blacksBestNode.getWhiteCount() 
+					&& whitesBestNode.fromNode() == blackAvailableMoves2.get(findBestOption) 
+					|| whiteSecondBest.fromNode() == blackAvailableMoves2.get(findBestOption)) {
+				
+				
+				if(blacksSecondBest.getWhiteCount()>blacksBestNode.getWhiteCount() && blacksBestNode.fromNode() != blackAvailableMoves2.get(findBestOption).fromNode()){
+					blacksSecondBest = blackAvailableMoves2.get(index);
+					BlacksSecondbestValue = blacksSecondBest.getWhiteCount();
+				}
+				
+				
+				blacksBestNode = blackAvailableMoves2.get(findBestOption);
+				index = findBestOption;
+			}
+	
 		}
 		
+		printBoard(blacksBestNode.getCurrentState());
+		System.out.println("-----");
+		printBoard(blacksSecondBest.getCurrentState());
+		System.out.println("Blacks best last");
+		
+		
+		bestOption = Integer.MIN_VALUE;																	// starting value
+		index = 0;			
+		int whitesSecondbestValue = Integer.MIN_VALUE;		
+		Node whitesSecondBest = new Node(0, 0, board, false);
+		Node whitessBestNode = whiteAvailableMoves1.get(0);
 		
 		// Child (2)
-		for (int findBestOption = 0; findBestOption < whiteAvailableMoves1.size(); findBestOption++) {
-			
+		for (int findBestOption = 0; findBestOption < whiteAvailableMoves1.size(); findBestOption++) {		// whites best
+			if (whiteAvailableMoves1.get(findBestOption).getWhiteCount() > whitessBestNode.getWhiteCount() 
+					&& blacksBestNode.fromNode() == whiteAvailableMoves1.get(findBestOption) 
+					|| whiteSecondBest.fromNode() == whiteAvailableMoves1.get(findBestOption)) {
+				
+				
+				if(whitesSecondbestValue<whitessBestNode.getWhiteCount() && whitessBestNode.fromNode() != whiteAvailableMoves1.get(findBestOption).fromNode()){
+					whitesSecondBest = whiteAvailableMoves1.get(findBestOption);
+					whitesSecondbestValue = whitesSecondBest.getWhiteCount();
+					System.out.println("--asdasds---");
+				}
+				
+				
+				blacksBestNode = blackAvailableMoves2.get(findBestOption);
+				index = findBestOption;
+			}
 		}
 		
+		
+		printBoard(whitessBestNode.getCurrentState());
+		System.out.println("-----");
+		printBoard(whitesSecondBest.getCurrentState());
+		System.out.println("Whites best first");
+		
+		Node toTake = blackAvailableMoves1.get(0);
+		int finalBestMove = Integer.MAX_VALUE;		
+		
 		// Child (1)
-		for (int findBestOption = 0; findBestOption < blackAvailableMoves1.size(); findBestOption++) {
-			
+		for (int findBestOption = 1; findBestOption < blackAvailableMoves1.size(); findBestOption++) {		// blacks best
+			if(finalBestMove<blackAvailableMoves1.get(findBestOption).getWhiteCount() && blackAvailableMoves1.get(findBestOption).fromNode() == whitessBestNode 
+					||blackAvailableMoves1.get(findBestOption).fromNode() == whitessBestNode );
+						toTake = blackAvailableMoves1.get(findBestOption);
+						index = findBestOption;
 		}
+		
+		printBoard(toTake.getCurrentState());
+		System.out.println("Blacks best first");
 		
 	}
 	
@@ -210,20 +261,33 @@ public class main {
 						if (newState[i][b].equals("[ ]")) {
 							
 							// SEE IF FLIP I,B = X,Y
-							// sends XY and see if its a okey move. 
+							// sends XY and see if its a okey move.
 							
+				
+//							System.out.println(gameLogic.seeIfallowedMove(i, b, newState, whiteTurn));
 							
-							if (whiteTurn) {
-								newState[i][b] = "[W]";
-							} else {
-								newState[i][b] = "[B]";
-							}
+							if(gameLogic.seeIfallowedMove(i, b, newState, whiteTurn)){
+								newState = gameLogic.tryToFlip(i, b, newState, whiteTurn);
+			
+								
+						
+							
+//							if (whiteTurn) {
+//								newState[i][b] = "[W]";
+//							} else {
+//								newState[i][b] = "[B]";
+//							}
 							Node newNode = new Node(i, b, newState, false);
 							newNode.setFromNode(fromNode);
 							if(depthEnd){
 								newNode.setEndNode(true);
 							}
 							
+							for (int x1 = 0; x1 < state.length; x1++) {     	  // copy of current state to use later
+								for (int y1 = 0; y1 < state.length; y1++) {
+									newState[x1][y1] = state[x1][y1];
+								}
+							}
 							
 							if(whiteTurn){
 								if(second  && !fourth){
@@ -245,7 +309,7 @@ public class main {
 									blackAvailableMoves2.add(newNode);						
 									newState[i][b] = "[ ]";
 //									System.out.println(blackAvailableMoves2.size());
-								}
+								}}
 							}
 						}
 

@@ -292,7 +292,37 @@ public class OthelloGame {
 
 	}*/
 	
+
+	public void test (String[][] state, int x, int y){
+	
+		board.setState(state);
+		tryToFlip(x ,y, true);
+	}
+	
+	
+	
+//	public Node getAvailableMoves(String[][] state, int x, int y) {
+//
+//
+//		boolean rootNode = true;
+//		for (int r = 0; r < ROWS; r++) {
+//			for (int c = 0; c < COLS; c++) {
+//				if (state[r][c].equals("[ ]") && tryToFlip(r, c, true)) {
+//					if (rootNode) {
+//						Node newNode = new Node(r, c, state, true);
+//						availableMoves.add(newNode);
+//					} else {
+//						Node newNode = new Node(r, c, state, false);
+//						newNode.setFromNode(availableMoves.get(c - 1));
+//					}
+//				}
+//			}
+//		}
+//		return availableMoves;
+//	}
+	
 	public boolean tryToFlip(int row, int col, boolean dontFlip) {
+		board.setState(tryThisState);
 		boolean hasFlipped = false;
 		String opposite = (turn.equals("[B]") ? "[W]" : "[B]"); 
 		String next;
@@ -450,6 +480,12 @@ public class OthelloGame {
 		return hasFlipped;
 
 	}
+	
+	
+	
+	
+	
+	
 	
 	public int getBoundedNumber(String message, int min, int max) {
 		boolean isValid = false;

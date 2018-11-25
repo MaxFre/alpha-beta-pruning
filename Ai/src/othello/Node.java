@@ -46,7 +46,7 @@ public class Node {
 	}
 	
 	public void setFromNode(Node fromNode){
-	this.fromNode = fromNode;	
+		this.fromNode = fromNode;	
 	}
 	
 	public boolean getEndNode(){

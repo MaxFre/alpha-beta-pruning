@@ -38,6 +38,19 @@ public class Board {
 		cells[2][1] = "[B]";	
 	}
 	
+	public String[][] getState(){
+		return cells;
+	}
+	
+	public void setState(String[][] state){
+		for (int x = 0; x < 4; x++){
+			for (int y = 0; y < 4; y++){
+				cells[x][y] = state[x][y];
+			}
+		}
+//		this.cells = state;
+	}
+	
 	public void printBoard() {
 		System.out.println();
 		System.out.print("    ");
