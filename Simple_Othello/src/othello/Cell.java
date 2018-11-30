@@ -25,13 +25,13 @@ public class Cell {
 	public void draw() {
 		switch (value) {
 		case BLACK:
-			System.out.print(" B ");
+			System.out.print("[B]");
 			break;
 		case WHITE:
-			System.out.print(" W ");
+			System.out.print("[W]");
 			break;
 		case BLANK:
-			System.out.print(" · ");
+			System.out.print("[ ]");
 			break;
 		}
 	}

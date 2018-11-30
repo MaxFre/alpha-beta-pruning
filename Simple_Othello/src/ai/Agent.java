@@ -13,6 +13,10 @@ public class Agent {
 	Game othelloGame;
 	Board boardCopy;
 	int depth = 0;
+	int alpha = Integer.MIN_VALUE;
+	int beta = Integer.MAX_VALUE;
+	
+	
 	public Agent(Game othelloGame) {
 		this.othelloGame = othelloGame;
 	}
@@ -98,8 +102,8 @@ public class Agent {
 		// Base case check for end state
 		GameState state = board.checkForWinner(player);
 
-		if(depth == 0) {
-			return new AiMove(board.countBlacks());
+		if(depth == 0) { // if depth == 0 return what move the ai will do.
+			return new AiMove(board.countBlacks());   // leaf, all aiMoves wihtput XY is leafs
 		}
 		else if (state == GameState.BLACK_WIN) {
 			return new AiMove(board.countBlacks());
@@ -114,18 +118,20 @@ public class Agent {
 		// Do the recursive function calls and construct the moves arraylist
 		for (int row = 0; row < board.getRows(); row++) {
 			for (int col = 0; col < board.getCols(); col++) {
-				if (board.tryToFlip(row, col, true, player)) {
+				if (board.tryToFlip(row, col, true, player)) { 	   // check if possible.
 					AiMove move = new AiMove();
 					move.row = row;
 					move.col = col;
 					
-					if(board.tryToFlip(row, col, false, player));
+					if(board.tryToFlip(row, col, false, player));  // make the move.
 //					board.printBoard();
 					if (player == Value.BLACK) {
-							move.score = getBestMove(board, Value.WHITE, depth-1).score;
+							move.score = getBestMove(board, Value.WHITE, depth-1).score;  // goes one depth deeper.
 					} else {
 							move.score = getBestMove(board, Value.BLACK, depth-1).score;
 					}
+					
+					
 					moves.add(move);
 					
 					board.setBoardState(boardCopy.getCurrentBoardState());
@@ -140,37 +146,52 @@ public class Agent {
 		if(moves.size() <= 0) {
 			return new AiMove(board.countBlacks());
 		}
-		else {
-//			for(int i = 0; i < moves.size(); i++) {
-//				AiMove move = moves.get(i);
-//				board.tryToFlip(move.row, move.col, false, player);
-//				board.printBoard();
-//				board.setBoardState(boardCopy.getCurrentBoardState());
-//			}
-			
-			// Pick the best move for the current player
-			int bestMove = 0;
-			if (player == Value.BLACK) {
-				int bestScore = Integer.MIN_VALUE;
-				for (int i = 0; i < moves.size(); i++) {
-					if (moves.get(i).score > bestScore) {
-						bestMove = i;
-						bestScore = moves.get(i).score;
-					}
+		else {		
+			return minMax(moves, player);
+		}
+	}
+	
+	
+	
+	public AiMove minMax(ArrayList<AiMove> moves, Value player){
+		
+		// minMax
+		int bestMove = 0;
+		if (player == Value.BLACK) {		// goes thru the options for the beta player
+			int bestScore = Integer.MIN_VALUE;
+			for (int i = 0; i < moves.size(); i++) {
+				if(alpha>=bestScore){			// https://www.youtube.com/watch?v=zp3VMe0Jpf8
+					return moves.get(bestMove);
 				}
-			} else if (player == Value.WHITE) {
-				int bestScore = Integer.MAX_VALUE;
-				for (int i = 0; i < moves.size(); i++) {
-					if (moves.get(i).score < bestScore) {
-						bestMove = i;
-						bestScore = moves.get(i).score;
+				if (moves.get(i).score > bestScore) {
+					bestMove = i;
+					bestScore = moves.get(i).score;
+					if(bestScore<beta){
+						beta = bestScore;
 					}
 				}
 			}
-
-			// Printing the board with all of the moves
-			// Return the best move
-			return moves.get(bestMove);
+		} else if (player == Value.WHITE) {		// goes thru the options for the alpha player
+			int bestScore = Integer.MAX_VALUE;
+			for (int i = 0; i < moves.size(); i++) {
+				if(beta<=bestScore){			// https://www.youtube.com/watch?v=zp3VMe0Jpf8 
+					return moves.get(bestMove);
+				}
+				if (moves.get(i).score < bestScore) {
+					bestMove = i;
+					bestScore = moves.get(i).score;
+					if(bestScore>alpha){
+						alpha = bestScore;
+					}
+				}
+			}
 		}
+
+		// Printing the board with all of the moves
+		// Return the best move
+		return moves.get(bestMove);
 	}
+	
+	
+	
 }
