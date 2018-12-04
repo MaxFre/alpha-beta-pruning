@@ -14,6 +14,10 @@ public class Cell {
 		value = val;
 	}
 	
+	public Value get() {
+		return this.value;
+	}
+	
 	public void clear() {
 		value = Value.BLANK;
 	}
@@ -31,4 +35,5 @@ public class Cell {
 			break;
 		}
 	}
+
 }

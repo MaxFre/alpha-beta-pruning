@@ -1,5 +1,5 @@
 package othello;
 
 public enum GameMode {
-	HumanVSHuman, HumanVSAi
+	HumanVSHuman, HumanVSAi, AiVSAi
 }

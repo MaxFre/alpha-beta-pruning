@@ -1,5 +1,5 @@
 package othello;
 
 public enum GameState {
-	IN_PROGRESS, DRAW, BLACK_WIN, WHITE_WIN, AI_WIN
+	IN_PROGRESS, DRAW, BLACK_WIN, WHITE_WIN
 }

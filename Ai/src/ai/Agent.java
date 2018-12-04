@@ -25,7 +25,7 @@ public class Agent {
 		boardCopy = new Board(board);
 		Value currentPlayer = player;
 		long start = System.currentTimeMillis();
-		AiMove bestMove = getBestMove(boardCopy, player, 1000);
+		AiMove bestMove = getBestMove(boardCopy, player, 4);
 		long finish = System.currentTimeMillis();
 		long timeElapsed = finish - start;
 		System.out.println("Time elapsed: " + timeElapsed + " in milliseconds");
@@ -127,8 +127,16 @@ public class Agent {
 //					board.printBoard();
 					if (player == Value.BLACK) {
 							move.score = getBestMove(board, Value.WHITE, depth-1).score;  // goes one depth deeper.
+							if(alpha>=move.score){											// https://www.youtube.com/watch?v=zp3VMe0Jpf8
+								System.out.println("alpha pruning");
+								return move;
+							}
 					} else {
 							move.score = getBestMove(board, Value.BLACK, depth-1).score;
+							if(beta<=move.score){								// https://www.youtube.com/watch?v=zp3VMe0Jpf8 
+								System.out.println("beta pruning");
+								return move;
+							}
 					}
 					
 					
@@ -160,12 +168,11 @@ public class Agent {
 		if (player == Value.BLACK) {		// goes thru the options for the beta player
 			int bestScore = Integer.MIN_VALUE;
 			for (int i = 0; i < moves.size(); i++) {
-				if(alpha>=bestScore){			// https://www.youtube.com/watch?v=zp3VMe0Jpf8
-					return moves.get(bestMove);
-				}
+				
 				if (moves.get(i).score > bestScore) {
 					bestMove = i;
 					bestScore = moves.get(i).score;
+					System.out.println("not");
 					if(bestScore<beta){
 						beta = bestScore;
 					}
@@ -174,12 +181,12 @@ public class Agent {
 		} else if (player == Value.WHITE) {		// goes thru the options for the alpha player
 			int bestScore = Integer.MAX_VALUE;
 			for (int i = 0; i < moves.size(); i++) {
-				if(beta<=bestScore){			// https://www.youtube.com/watch?v=zp3VMe0Jpf8 
-					return moves.get(bestMove);
-				}
+				
+				
 				if (moves.get(i).score < bestScore) {
 					bestMove = i;
 					bestScore = moves.get(i).score;
+					System.out.println("not");
 					if(bestScore>alpha){
 						alpha = bestScore;
 					}
