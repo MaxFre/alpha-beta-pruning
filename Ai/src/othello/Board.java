@@ -13,10 +13,10 @@ public class Board {
 			for (int c = 0; c < COLS; c++)
 				cells[r][c] = new Cell(row, col);
 		
-		cells[1][1].set(Value.WHITE); 
-		cells[1][2].set(Value.BLACK); 
-		cells[2][2].set(Value.WHITE); 
-		cells[2][1].set(Value.BLACK); 
+		cells[3][3].set(Value.WHITE); 
+		cells[3][4].set(Value.BLACK); 
+		cells[4][3].set(Value.WHITE); 
+		cells[4][4].set(Value.BLACK); 
 	}
 	
 	public Board(Board board) {
@@ -24,8 +24,8 @@ public class Board {
 		this.COLS = board.COLS;
 		cells = null;
 		cells = new Cell[ROWS][COLS];
-		for(int r = 0; r < 4; r++) {
-			for(int c = 0; c < 4; c++) {
+		for(int r = 0; r < ROWS; r++) {
+			for(int c = 0; c < COLS; c++) {
 				cells[r][c] = new Cell(r,c);
 				cells[r][c].set(board.cells[r][c].get());
 			}
@@ -269,8 +269,8 @@ public class Board {
 	public void setBoardState(Cell[][] state) {
 		cells = null;
 		cells = new Cell[ROWS][COLS];
-		for(int r = 0; r < 4; r++) {
-			for(int c = 0; c < 4; c++) {
+		for(int r = 0; r < ROWS; r++) {
+			for(int c = 0; c <COLS; c++) {
 				cells[r][c] = new Cell(r,c);
 				cells[r][c].set(state[r][c].get());
 			}

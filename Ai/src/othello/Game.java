@@ -13,8 +13,8 @@ public class Game {
 	private GameMode mode;
 	private Value turn;
 	
-	private int ROWS = 4;
-	private int COLS = 4;
+	private int ROWS = 8;
+	private int COLS = 8;
 	private int roundCounter = 0;
 
 	private static Scanner input = new Scanner(System.in);
@@ -25,7 +25,7 @@ public class Game {
 		mode = GameMode.AiVSAi;
 		black = new Agent(this);
 		white = new Agent(this);
-		turn = Value.BLACK;
+		turn = Value.WHITE;
 		state = GameState.IN_PROGRESS;
 		playGame();
 	}
