@@ -1,11 +1,17 @@
 package KnapsackProblem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Random;
+
+import KnapsackProblem.FractionalKnapSack.ItemValue;
 
 public class Greedy {
 
 	ArrayList<Item> items = new ArrayList<Item>();
 	ArrayList<Knapsack> Knapsacks = new ArrayList<Knapsack>();
+	ArrayList<Item> itemsWithBestValue = new ArrayList<Item>();
 	
 	int value = 3;
 	int weight = 1;
@@ -14,67 +20,139 @@ public class Greedy {
 	
 	public Greedy(){
 		
+		
 		createItems();
 		createKnapsack();
-//		printLayout();
+		getValues();
+		
+		
+		
 		greedyAlgortihm();
-	
+		neighborhoodSearch();
 	}
 	
+	public void getValues(){
+		
+	
+		
+
+		
+		while(!(items.isEmpty())){		
+			
+			double currentBestValue = Integer.MIN_VALUE;;
+			int currentBestIndex = 0;
+			
+			for(int i = 0; i<items.size(); i++){
+				
+				if(items.get(i).getRelativeValue()>currentBestValue){
+					currentBestValue = items.get(i).getRelativeValue();
+					currentBestIndex = i;
+				}
+			}
+			
+			itemsWithBestValue.add(items.get(currentBestIndex));
+			items.remove(currentBestIndex);
+		}
+		
+		
+		for(int i = 0; i<itemsWithBestValue.size(); i++){
+			System.out.println("item:" + itemsWithBestValue.get(i).getName() + " weight: " + itemsWithBestValue.get(i).getWeight() + "  " + itemsWithBestValue.get(i).getRelativeValue()
+					+ " totalValue = " +  itemsWithBestValue.get(i).getValue());
+		}
+		
+		System.out.println();
+		
+	}
+	
+	
+	public void neighborhoodSearch(){
+		
+		
+		
+	}
 	
 	
 	public void greedyAlgortihm(){
-		
-			while(true){
-				int bestValueIndex = 0;
-				double bestValue = 0;
-				
-				if(items.isEmpty() || Knapsacks.get(0).getCurrentWeight() == Knapsacks.get(0).getSize()){
-					break;
-				}
-				
-				for(int i = 0; i<items.size(); i++){
-					int totalWeight = Knapsacks.get(0).getCurrentWeight() + items.get(i).getWeight();
-					if(totalWeight<Knapsacks.get(0).getSize()){
-						if(items.get(i).getRelativeValue()>bestValue){
-						bestValueIndex = i;
-						bestValue = items.get(i).getRelativeValue();						
-						}
+
+		for(int j = 0; j < Knapsacks.size(); j++){
+		for(int i = 0; i < itemsWithBestValue.size(); i++){		
+			
+				if(Knapsacks.get(j).getCurrentWeight() < Knapsacks.get(j).getSize()){
+					if(Knapsacks.get(j).getCurrentWeight() + itemsWithBestValue.get(i).getWeight() <= Knapsacks.get(j).getSize()){
+						Knapsacks.get(j).addItem(itemsWithBestValue.get(i));
+						System.out.println("adding item: " + itemsWithBestValue.get(i).getName() + "   "
+								+ itemsWithBestValue.get(i).getRelativeValue() + "  "
+								+ itemsWithBestValue.get(i).getWeight() + " to Knapsacks " + j
+								+ " current weight: " + Knapsacks.get(j).getCurrentWeight());
+						itemsWithBestValue.remove(i);
 					}
-					
 				}
-				
-				System.out.println("\n");
-				System.out.println("Adding item: " + items.get(bestValueIndex).getWeight());			
-				Knapsacks.get(0).addItem(items.get(bestValueIndex));
-				items.remove(bestValueIndex);
-				System.out.println("current weight: " + Knapsacks.get(0).getCurrentWeight());
 			}
-			System.out.println("Done\n");
-			printLayout();
+		}
+			
+			
+			
+		System.out.println();
+		for(int i = 0; i<Knapsacks.size(); i++){
+//			System.out.println("finalweight:" +	Knapsacks.get(i).getCurrentWeight() + " value " + Knapsacks.get(i).getValue()  + "  current weight:  " + Knapsacks.get(i).getCurrentWeight() +" ITEMS in "+ Knapsacks.get(i).getArrayList().size());
+		
+			
+			int finalWeight = Knapsacks.get(i).getCurrentWeight();
+			double value =  Knapsacks.get(i).getValue();
+			int nmbrOfItems = Knapsacks.get(i).getArrayList().size();
+				
+			System.out.println(String.format("%-10s %-10s %-10s", "finalWeight", "value", "nmbrOfItems"));
+			System.out.println(String.format("%-10s %-10s %-10s", finalWeight, value, nmbrOfItems));
+			System.out.println();
+		}
+		
+		
+		System.out.println();
+		for(int i = 0; i<itemsWithBestValue.size(); i++){
+			System.out.println("REMAINING item:" + itemsWithBestValue.get(i).getName() + " weight: " + itemsWithBestValue.get(i).getWeight() + "  " + itemsWithBestValue.get(i).getRelativeValue()
+					+ " totalValue = " +  itemsWithBestValue.get(i).getValue());
+		}	
 	}	
 	
 	
-	public void printLayout(){
-		System.out.println("Knapsack - Size:" + Knapsacks.get(0).getSize() + " current weight: " + Knapsacks.get(0).getCurrentWeight());
-		for(int i = 0; i<items.size(); i++){
-			System.out.println(items.get(i).getName() + " weight: " + items.get(i).getWeight()  + " value: " + items.get(i).getValue()+ " relativeValue: " + items.get(i).getRelativeValue());
-		}
-	}
+
+	
 	
 	public void createKnapsack(){
 		Knapsack knapsack = new Knapsack(30);
+		Knapsack knapsack2 = new Knapsack(15);
+//		Knapsack knapsack3 = new Knapsack(20);
 		Knapsacks.add(knapsack);
+		Knapsacks.add(knapsack2);
+//		Knapsacks.add(knapsack3);
+		
 	}
 	
 	public void createItems(){
-		
-		for(int i = 1; i<11; i++){
-			Item item = new Item("Item"+i,value, weight);
-			items.add(item);
-			value++;
-			weight++;
-		}
+//				item:Item7 weight: 4  2.25 totalValue = 9
+//				item:Item6 weight: 4  2.0 totalValue = 8
+//				item:Item8 weight: 7  1.4285714285714286 totalValue = 10
+//				item:Item3 weight: 4  1.25 totalValue = 5
+//				item:Item4 weight: 5  1.2 totalValue = 6
+//				item:Item10 weight: 11  1.0909090909090908 totalValue = 12
+//				item:Item9 weight: 15  0.7333333333333333 totalValue = 11
+//				item:Item2 weight: 7  0.5714285714285714 totalValue = 4
+//				item:Item5 weight: 14  0.5 totalValue = 7
+//				item:Item1 weight: 13  0.23076923076923078 totalValue = 3
+				
+			
+				
+				items.add(new Item("Item7",9, 4));
+				items.add(new Item("Item6",8, 4));
+				items.add(new Item("Item8",10, 7));
+				items.add(new Item("Item3",5, 4));
+				items.add(new Item("Item4",6, 5));
+				items.add(new Item("Item10",12, 11));
+				items.add(new Item("Item9",11, 15));
+				items.add(new Item("Item2",4, 7));
+				items.add(new Item("Item5",7, 14));
+				items.add(new Item("Item1",3, 13));
+			
 	}
 	
 	

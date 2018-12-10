@@ -25,7 +25,7 @@ public class Item {
 	}
 	
 	public double getRelativeValue(){
-		return (double)weight/value;
+		return (double)value/weight;
 	}
 	
 }
