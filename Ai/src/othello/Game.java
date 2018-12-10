@@ -6,7 +6,6 @@ import ai.Agent;
 
 public class Game {
 	private Board board;
-	private Agent ai;
 	private Agent black;
 	private Agent white;
 	private GameState state;
@@ -22,10 +21,10 @@ public class Game {
 	public Game() {
 		board = new Board(ROWS, COLS);
 		//chooseGamemode();
-		mode = GameMode.AiVSAi;
+		mode = GameMode.HumanVSAi;
 		black = new Agent(this);
 		white = new Agent(this);
-		turn = Value.WHITE;
+		turn = Value.BLACK;
 		state = GameState.IN_PROGRESS;
 		playGame();
 	}
@@ -39,7 +38,7 @@ public class Game {
 				isInputValid = true;
 				mode = (gameMode.equalsIgnoreCase("hvh") ? GameMode.HumanVSHuman : GameMode.HumanVSAi);
 				if(mode == GameMode.HumanVSAi)
-					ai = new Agent(this);
+					black = new Agent(this);
 				System.out.println(gameMode.equalsIgnoreCase("hva") ? "You are white" : "");
 			}
 			else {
@@ -87,12 +86,6 @@ public class Game {
 	public void makeMove() {
 		boolean isInputValid = false;
 		if(mode == GameMode.AiVSAi) {
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 			if(turn == Value.BLACK) {
 				black.makeMove(board, turn);
 			}
@@ -105,17 +98,10 @@ public class Game {
 				
 				// AGENTS TURN
 				// DO STUFF
-				ai.makeMove(board, turn);
-//				int[] aiMove = ai.makeMove(board, turn);
-//				int row = aiMove[0];
-//				int col = aiMove[1];
-//
-//				if (board.tryToFlip(row, col, false, turn))
-//					isInputValid = true;
+				black.makeMove(board, turn);
 		
 			}
 			if(turn == Value.WHITE) {
-			//else if (turn == Value.WHITE) {
 				while (!isInputValid) {
 					int row = getBoundedNumber("Row", 0, ROWS);
 					int col = getBoundedNumber("Column", 0, COLS);
@@ -143,7 +129,6 @@ public class Game {
 	
 	public void changeTurn() {
 		turn = (turn == Value.BLACK ? Value.WHITE : Value.BLACK);
-		//System.out.format("%s's turn.%n", turn);
 	}
 	
 	public int getBoundedNumber(String what, int min, int max) {

@@ -12,10 +12,9 @@ public class Agent {
 	
 	Game othelloGame;
 	Board boardCopy;
-	int depth = 0;
+	int depth = 12;
 	int alpha = Integer.MIN_VALUE;
 	int beta = Integer.MAX_VALUE;
-	
 	
 	public Agent(Game othelloGame) {
 		this.othelloGame = othelloGame;
@@ -25,17 +24,15 @@ public class Agent {
 		boardCopy = new Board(board);
 		Value currentPlayer = player;
 		long start = System.currentTimeMillis();
-		AiMove bestMove = getBestMove(boardCopy, player, 12);
+		AiMove bestMove = getBestMove(boardCopy, player, depth);
 		long finish = System.currentTimeMillis();
 		long timeElapsed = finish - start;
-		System.out.println("Time elapsed: " + timeElapsed + " milliseconds");
-		//AiMove bestMove = minimax(boardCopy, currentPlayer, 0);
-		if(board.tryToFlip(bestMove.row, bestMove.col, false, currentPlayer));
+		System.out.println("Time elapsed: " + timeElapsed + " milliseconds" + "\nSearch depth: " + depth);
+		if(board.tryToFlip(bestMove.row, bestMove.col, false, currentPlayer)); 
 	}
 	
 	private AiMove getBestMove(Board board, Value player, int depth) {
 		Board boardCopy = new Board(board);
-
 		
 		GameState state = board.checkForWinner(player);
 		// Base case check for end state
@@ -61,15 +58,14 @@ public class Agent {
 					move.col = col;
 					
 					if(board.tryToFlip(row, col, false, player));  // make the move.
-//					board.printBoard();
 					if (player == Value.BLACK) {
 							move.score = getBestMove(board, Value.WHITE, depth-1).score;
-							if(alpha>=move.score){			// https://www.youtube.com/watch?v=zp3VMe0Jpf8
+							if(alpha>=move.score){			
 								return move;
 							}
 					} else {
 							move.score = getBestMove(board, Value.BLACK, depth-1).score;
-							if(beta<=move.score){			// https://www.youtube.com/watch?v=zp3VMe0Jpf8 
+							if(beta<=move.score){			
 								return move;
 							}
 					}
@@ -80,21 +76,18 @@ public class Agent {
 					board.setBoardState(boardCopy.getCurrentBoardState());
 				}
 			}
-		}
-//		System.out.println("---------------------------------------------------------------------------------------");
-//		System.out.println("Size of movesList: " + moves.size() + "\nPlayer: " + player + "\nDepth: " + depth + "\nPrinting the movesList");
-//		
+		}	
 		if(moves.size() <= 0) {
 			return new AiMove(board.countBlacks());
 		}
 		else {		
-			return minMax(moves, player);
+			return evaluate(moves, player);
 		}
 	}
 	
 	
 	
-	public AiMove minMax(ArrayList<AiMove> moves, Value player){
+	public AiMove evaluate(ArrayList<AiMove> moves, Value player){
 		
 		// minMax
 		int bestMove = 0;

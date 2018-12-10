@@ -15,8 +15,8 @@ public class Board {
 		
 		cells[3][3].set(Value.WHITE); 
 		cells[3][4].set(Value.BLACK); 
-		cells[4][3].set(Value.WHITE); 
-		cells[4][4].set(Value.BLACK); 
+		cells[4][4].set(Value.WHITE); 
+		cells[4][3].set(Value.BLACK); 
 	}
 	
 	public Board(Board board) {
