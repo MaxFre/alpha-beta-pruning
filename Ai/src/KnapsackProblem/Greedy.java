@@ -66,8 +66,66 @@ public class Greedy {
 	
 	
 	public void neighborhoodSearch(){
+		int limit  = 15;
+		int current  = 0;
 		
+		ArrayList<Item> first = Knapsacks.get(0).getArrayList();
+		ArrayList<Item> second = Knapsacks.get(1).getArrayList();
 		
+		ArrayList<Item> listbestSofar = Knapsacks.get(0).getArrayList();
+		
+		int finalWeight = 0;
+		double value = 0;
+		int nmbrOfItems = first.size();
+		
+		double bestSofar = Knapsacks.get(0).getValue();
+		int weightlimit =   Knapsacks.get(0).getSize();
+		
+		while(limit>current){
+			finalWeight = 0;
+			value = 0;
+			nmbrOfItems = first.size();
+			try {
+				int getRidWith = 0;
+			
+				itemsWithBestValue.add(first.get(getRidWith));
+				first.remove(getRidWith);
+			
+				Random rand = new Random();
+				int what = rand.nextInt(itemsWithBestValue.size());
+				first.add(itemsWithBestValue.get(what));
+				itemsWithBestValue.remove(what);
+				
+			
+				
+				for(int i = 0; i<first.size(); i++){
+					
+					value += first.get(i).getValue();
+					finalWeight += first.get(i).getWeight();
+				}
+				
+				if(bestSofar<value && finalWeight<=weightlimit) {
+					bestSofar = value;
+					listbestSofar = first;
+					System.out.println( "new best!");
+				}
+		
+				
+				System.out.println();
+				System.out.println(String.format("%-10s %-10s %-10s", "finalWeight", "value", "nmbrOfItems"));
+				System.out.println(String.format("%-10s %-10s %-10s", finalWeight, value, nmbrOfItems));
+				getRidWith++;
+				current++;
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("BEST THING WE FOUND");
+		System.out.println(String.format("%-10s %-10s %-10s", "finalWeight", "value", "nmbrOfItems"));
+		System.out.println(String.format("%-10s %-10s %-10s", bestSofar, value, nmbrOfItems));
 		
 	}
 	

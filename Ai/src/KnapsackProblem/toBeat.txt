@@ -1,0 +1,66 @@
+
+
+--AI--
+
+item:Item3 weight: 4  1.25 totalValue = 5
+item:Item9 weight: 15  0.7333333333333333 totalValue = 11
+item:Item5 weight: 14  0.5 totalValue = 7
+item:Item1 weight: 13  0.23076923076923078 totalValue = 3
+-----------------------------------------------------------------------
+
+Knapsack 0	   23		        		29	
+item:Item7 weight: 4  2.25 totalValue = 9
+item:Item8 weight: 7  1.4285714285714286 totalValue = 10
+item:Item4 weight: 5  1.2 totalValue = 6
+item:Item2 weight: 7  0.5714285714285714 totalValue = 4
+------------------------------------------------------------------------
+
+Knapsack 1	   15					20
+item:Item6 weight: 4  2.0 totalValue = 8
+item:Item10 weight: 11  1.0909090909090908 totalValue = 12
+
+------------------------------------------------------------------------
+
+--EGEN--
+
+item:Item3 weight: 4  1.25 totalValue = 5
+item:Item4 weight: 5  1.2 totalValue = 6
+item:Item2 weight: 7  0.5714285714285714 totalValue = 4
+item:Item5 weight: 14  0.5 totalValue = 7
+item:Item1 weight: 13  0.23076923076923078 totalValue = 3
+
+------------------------------------------------------------------------
+
+Knapsack 0	   26		        		39
+item:Item7 weight: 4  2.25 totalValue = 9
+item:Item6 weight: 4  2.0 totalValue = 8
+item:Item8 weight: 7  1.4285714285714286 totalValue = 10
+item:Item10 weight: 11  1.0909090909090908 totalValue = 12
+
+
+
+------------------------------------------------------------------------
+
+Knapsack 1	   15					11
+item:Item9 weight: 15  0.7333333333333333 totalValue = 11
+
+------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
