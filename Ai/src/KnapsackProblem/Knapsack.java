@@ -14,7 +14,16 @@ public class Knapsack {
 		this.size = size;
 	}
 	
+	public Knapsack(Knapsack knapsack){
+		this.size = knapsack.size;
+		this.contains = knapsack.getArrayList();
+	}
+	
 	public int getCurrentWeight(){
+		currentWeight = 0;
+		for (int i = 0; i < contains.size(); i++) {
+			currentWeight += contains.get(i).getWeight();
+		}
 		return currentWeight;
 	}
 	public int getSize(){
@@ -22,7 +31,21 @@ public class Knapsack {
 	}
 	
 	public double getValue(){
+		
+		value = 0;
+		
+		for (int i = 0; i < contains.size(); i++) {
+			value += contains.get(i).getValue();
+		}
 		return value;
+	}
+	
+	
+	public int howManyItems(){
+		int howMany = 0;
+		
+		howMany =  contains.size();
+		return	howMany;
 	}
 	
 	public void removeItem(int index){
@@ -36,6 +59,15 @@ public class Knapsack {
 		contains.add(item);
 		currentWeight += item.getWeight();
 		value += item.getValue();
+	}
+	
+	public Item getItem(int index){
+		return contains.get(index);
+	}
+	
+	
+	public void addList(ArrayList<Item> list){		
+		contains = list;
 	}
 	
 	

@@ -12,6 +12,7 @@ public class Greedy {
 	ArrayList<Item> items = new ArrayList<Item>();
 	ArrayList<Knapsack> Knapsacks = new ArrayList<Knapsack>();
 	ArrayList<Item> itemsWithBestValue = new ArrayList<Item>();
+	ArrayList<Item> allItems = new ArrayList<Item>();
 	
 	int value = 3;
 	int weight = 1;
@@ -31,12 +32,23 @@ public class Greedy {
 		neighborhoodSearch();
 	}
 	
-	public void getValues(){
-		
 	
+	
+	public void printList(Knapsack current){
 		
+		ArrayList<Item> list =  current.getArrayList();
+				
+		System.out.println("printing ");
+		for(int i = 0; i<list.size(); i++){
+			System.out.println("item: " + list.get(i).getName() + "   weight: " + list.get(i).getWeight() + "   value: " + list.get(i).getValue());
+		}
+			
+		System.out.println("bag value: " + current.getValue()  + " bag current weight: " + current.getCurrentWeight() + " bag limit: " + current.getSize());
+		
+	}
+	
+	public void getValues(){
 
-		
 		while(!(items.isEmpty())){		
 			
 			double currentBestValue = Integer.MIN_VALUE;;
@@ -65,87 +77,96 @@ public class Greedy {
 	}
 	
 	
-	public void neighborhoodSearch(){
-		int limit  = 15;
-		int current  = 0;
-		
+	public void neighborhoodSearch() {
+
+		System.out.println("NBHS");
+
+		int limit = 15;
+		int current = 0;
+
 		ArrayList<Item> first = Knapsacks.get(0).getArrayList();
 		ArrayList<Item> second = Knapsacks.get(1).getArrayList();
+
 		
-		ArrayList<Item> listbestSofar = Knapsacks.get(0).getArrayList();
 		
-		int finalWeight = 0;
-		double value = 0;
-		int nmbrOfItems = first.size();
+//		Knapsack first1 = new Knapsack(Knapsacks.get(0).getSize());
+//		Knapsack second1 = new Knapsack(Knapsacks.get(1).getSize());
 		
-		double bestSofar = Knapsacks.get(0).getValue();
-		int weightlimit =   Knapsacks.get(0).getSize();
+		Knapsack newKnapsacK1 = new Knapsack(Knapsacks.get(0));
+		Knapsack newKnapsack2 = new Knapsack(Knapsacks.get(1));
 		
-		while(limit>current){
-			finalWeight = 0;
-			value = 0;
-			nmbrOfItems = first.size();
-			try {
-				int getRidWith = 0;
+		
+		for (int i = 0; i < first.size(); i++) {
 			
-				itemsWithBestValue.add(first.get(getRidWith));
-				first.remove(getRidWith);
+			Item swapFromFirst = newKnapsacK1.getItem(i);
 			
-				Random rand = new Random();
-				int what = rand.nextInt(itemsWithBestValue.size());
-				first.add(itemsWithBestValue.get(what));
-				itemsWithBestValue.remove(what);
+			for (int b = 0; b < second.size(); b++) {
+							
+				Item swapFromSecond = newKnapsack2.getItem(b);
 				
-			
 				
-				for(int i = 0; i<first.size(); i++){
+				int firstBagsCurrentSize = newKnapsacK1.getCurrentWeight();
+				int SecondBagsCurrentSize = newKnapsack2.getCurrentWeight();
+
+				int newFirstWeight = firstBagsCurrentSize+swapFromSecond.getWeight()- swapFromFirst.getWeight();
+				int newSecondWeight = SecondBagsCurrentSize+swapFromFirst.getWeight()- swapFromSecond.getWeight();
+				
+				if(newFirstWeight<newKnapsacK1.getSize() && newSecondWeight<newKnapsack2.getSize()){
 					
-					value += first.get(i).getValue();
-					finalWeight += first.get(i).getWeight();
+					newKnapsacK1.removeItem(i);
+					newKnapsack2.removeItem(b);
+					
+					newKnapsacK1.addItem(swapFromSecond);
+					newKnapsack2.addItem(swapFromFirst);
+										
+					System.out.println("\nchange took place");
+					System.out.println("newFirst size: " + newKnapsacK1.getCurrentWeight() + "  value: " + newKnapsacK1.getValue());
+					System.out.println("newSecond size: " + newKnapsack2.getCurrentWeight() + "  value: " + newKnapsack2.getValue());
+					
+					
+					for (int j = 0; j < itemsWithBestValue.size(); j++) {
+						
+						Item currentFromList = itemsWithBestValue.get(j);
+						
+						if(newKnapsacK1.getCurrentWeight()+currentFromList.getWeight()<newKnapsacK1.getSize()){
+							System.out.println("\nAdding new Item to 1, item: " + currentFromList.getName());		
+							System.out.println("newKnapsacK1 size: " + newKnapsacK1.getCurrentWeight() + "  value: " + newKnapsacK1.getValue());
+							newKnapsacK1.addItem(currentFromList);
+							printList(newKnapsacK1);
+						}
+						
+						if(newKnapsack2.getCurrentWeight()+currentFromList.getWeight()<newKnapsack2.getSize()){
+							System.out.println("\nAdding new Item to , item: " + currentFromList.getName());
+							System.out.println("newKnapsack2 size: " + newKnapsack2.getCurrentWeight() + "  value: " + newKnapsack2.getValue());
+							newKnapsack2.addItem(currentFromList);
+							printList(newKnapsack2);
+						}
+					}
+					
 				}
-				
-				if(bestSofar<value && finalWeight<=weightlimit) {
-					bestSofar = value;
-					listbestSofar = first;
-					System.out.println( "new best!");
-				}
-		
-				
-				System.out.println();
-				System.out.println(String.format("%-10s %-10s %-10s", "finalWeight", "value", "nmbrOfItems"));
-				System.out.println(String.format("%-10s %-10s %-10s", finalWeight, value, nmbrOfItems));
-				getRidWith++;
-				current++;
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			}	
 		}
 		
-		System.out.println("BEST THING WE FOUND");
-		System.out.println(String.format("%-10s %-10s %-10s", "finalWeight", "value", "nmbrOfItems"));
-		System.out.println(String.format("%-10s %-10s %-10s", bestSofar, value, nmbrOfItems));
 		
+
 	}
 	
-	
-	public void greedyAlgortihm(){
+	public void greedyAlgortihm() {
 
-		for(int j = 0; j < Knapsacks.size(); j++){
-		for(int i = 0; i < itemsWithBestValue.size(); i++){		
-			
-				if(Knapsacks.get(j).getCurrentWeight() < Knapsacks.get(j).getSize()){
-					if(Knapsacks.get(j).getCurrentWeight() + itemsWithBestValue.get(i).getWeight() <= Knapsacks.get(j).getSize()){
-						Knapsacks.get(j).addItem(itemsWithBestValue.get(i));
-						System.out.println("adding item: " + itemsWithBestValue.get(i).getName() + "   "
-								+ itemsWithBestValue.get(i).getRelativeValue() + "  "
-								+ itemsWithBestValue.get(i).getWeight() + " to Knapsacks " + j
-								+ " current weight: " + Knapsacks.get(j).getCurrentWeight());
-						itemsWithBestValue.remove(i);
-					}
+		for (int j = 0; j < Knapsacks.size(); j++) {
+			for (int i = 0; i < itemsWithBestValue.size(); i++) {
+
+				if (Knapsacks.get(j).getCurrentWeight() + itemsWithBestValue.get(i).getWeight() <= Knapsacks.get(j)
+						.getSize()) {
+					Knapsacks.get(j).addItem(itemsWithBestValue.get(i));
+					System.out.println("adding item: " + itemsWithBestValue.get(i).getName() + "   "
+							+ itemsWithBestValue.get(i).getRelativeValue() + "  "
+							+ itemsWithBestValue.get(i).getWeight() + " to Knapsacks " + j + " current weight: "
+							+ Knapsacks.get(j).getCurrentWeight());
+					itemsWithBestValue.remove(i);
 				}
 			}
+
 		}
 			
 			
@@ -211,6 +232,9 @@ public class Greedy {
 				items.add(new Item("Item5",7, 14));
 				items.add(new Item("Item1",3, 13));
 			
+				
+				
+				
 	}
 	
 	
