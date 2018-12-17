@@ -119,11 +119,12 @@ public class Greedy {
 			swapItems = new ArrayList<>();
 			//Copying the original knapsack and adding an item on index i to the swap list
 			for(int i = 0; i < Knapsacks.size(); i++) {
+				System.out.println("gITEM = " + gItem);
 				Knapsack knapsack = new Knapsack(Knapsacks.get(i));
 				copyKnapsacks.add(knapsack);
-				Item item = copyKnapsacks.get(i).getArrayList().get(gItem);
+				Item item = copyKnapsacks.get(i).getItem(0);
 				swapItems.add(item);
-				copyKnapsacks.get(i).removeItem(gItem);			
+				copyKnapsacks.get(i).removeItem(0);			
 			}
 			
 			//Swaping items in the bags, i starts at 0 but index for getting the items starts at swapItems size -1
@@ -134,12 +135,12 @@ public class Greedy {
 				Item itemToSwitch = swapItems.get(index);
 				if(copyKnapsacks.get(i).getCurrentWeight() + itemToSwitch.getWeight() <= copyKnapsacks.get(i).getSize()) {
 					copyKnapsacks.get(i).addItem(itemToSwitch);
-					swapItems.remove(index);
+
 				}
 				else{
 					// returns the item to list of the remaining items when not used in bags.
 					itemsWithBestValue.add(itemToSwitch);
-					swapItems.remove(index);
+
 				}
 				index--;
 			}
@@ -312,7 +313,7 @@ public class Greedy {
 	public void createItems() {
 
 		Random rand = new Random();
-		for(int i = 10; i>0; i--){
+		for(int i = 9; i>0; i--){
 			items.add(new Item("Item"+i, rand.nextInt(15)+1, rand.nextInt(15)+1));
 		}
 		
