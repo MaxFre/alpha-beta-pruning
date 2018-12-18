@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 
-public class Greedy {
+public class KnapsackProblem {
 
 	ArrayList<Item> items = new ArrayList<Item>();
 	ArrayList<Knapsack> Knapsacks = new ArrayList<Knapsack>();
@@ -20,7 +20,7 @@ public class Greedy {
 	boolean first = true;
 	int threshold = 5;
 	
-	public Greedy(){
+	public KnapsackProblem(){
 		
 		
 		createItems();
@@ -123,6 +123,7 @@ public class Greedy {
 				Knapsack knapsack = new Knapsack(Knapsacks.get(i));
 				copyKnapsacks.add(knapsack);
 				Item item = copyKnapsacks.get(i).getItem(0);
+				System.out.println("Adding item to swapList " + item.getName());
 				swapItems.add(item);
 				copyKnapsacks.get(i).removeItem(0);			
 			}
@@ -334,6 +335,6 @@ public class Greedy {
 
 	
 	public static void main(String[] args) {
-		Greedy run  = new Greedy();
+		KnapsackProblem run  = new KnapsackProblem();
 	}
 }
