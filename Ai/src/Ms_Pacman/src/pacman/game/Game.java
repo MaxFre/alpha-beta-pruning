@@ -689,6 +689,7 @@ public final class Game
 					
 					if(pacman.numberOfLivesRemaining<=0)
 						gameOver=true;
+						
 					else
 						_levelReset();
 					

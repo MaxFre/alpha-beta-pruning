@@ -47,11 +47,11 @@ public class Executor
 	 */
 	public static void main(String[] args)
 	{
-		Executor exec=new Executor();
+		Executor exec = new Executor();
 
 		
 		//run multiple games in batch mode - good for testing.
-		int numTrials=10;
+//		int numTrials=10;
 //		exec.runExperiment(new RandomPacMan(),new RandomGhosts(),numTrials);
 		 
 		
@@ -70,11 +70,12 @@ public class Executor
 		
 		
 		
-		// de vi anv‰nder!
-//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);	
-		exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
-	
-		
+		// de vi anv√§nder!
+//		exec.runGameTimed(new HumanController(new KeyBoardInput()), new StarterGhosts(), visual);
+		for(int i = 0; i<10; i++){
+			exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
+		}
+
 		
 		
 		
@@ -95,7 +96,7 @@ public class Executor
 		 */
 		
 		//run game for data collection
-		exec.runGameTimed(new DataCollectorController(new KeyBoardInput()),new StarterGhosts(),visual);
+//		exec.runGameTimed(new DataCollectorController(new KeyBoardInput()),new StarterGhosts(),visual);
 	}
 	
     /**
@@ -173,6 +174,7 @@ public class Executor
     public void runGameTimed(Controller<MOVE> pacManController,Controller<EnumMap<GHOST,MOVE>> ghostController,boolean visual)
 	{
 		Game game=new Game(0);
+		
 		
 		GameView gv=null;
 		

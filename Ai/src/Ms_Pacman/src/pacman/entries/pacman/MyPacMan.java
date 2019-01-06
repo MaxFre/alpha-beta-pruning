@@ -5,6 +5,8 @@ import java.util.Random;
 
 import dataRecording.DataTuple;
 import pacman.controllers.Controller;
+import pacman.game.Constants.DM;
+import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.util.IO;
 import pacman.game.Game;
@@ -72,14 +74,103 @@ public class MyPacMan extends Controller<MOVE>
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 	}
 
 	@Override
 	public MOVE getMove(Game game, long timeDue) {
 		// TODO Auto-generated method stub
 		
+//		BLINKYDIST;INKYDIST;PINKYDIST;SUEDIST;PACMANPOSITION;CURRENTSCORE;DIRECTIONCHOSEN;
+			
+		// Ghost dist
+		String blinkyDist = String.valueOf(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.BLINKY)));
+		String INKYDIST = String.valueOf(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.INKY)));
+		String PINKYDIST = String.valueOf(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.PINKY)));
+		String SUEDIST = String.valueOf(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.SUE)));
 		
-				
+		// pacman pos
+		String pacmanPos = String.valueOf(game.getPacmanCurrentNodeIndex());
+		
+		// currentScore
+		String currentScore = String.valueOf (game.getScore());
+		
+		
+//		String[] toFindMove = {blinkyDist ,INKYDIST,PINKYDIST,SUEDIST, pacmanPos,currentScore};
+		String[] toFindMove = {blinkyDist ,INKYDIST,PINKYDIST,SUEDIST, pacmanPos,currentScore};
+		
+		String direction = tree.predictTargetAttributeValue(toFindMove);
+		
+		System.out.println("MOVE: " + direction);
+		
+		
+		if(direction == null){
+			return allMoves[rand.nextInt(allMoves.length)];
+		}
+		
+		if(direction.equals("NEUTRAL")){
+			return allMoves[rand.nextInt(allMoves.length)];
+		}
+		
+		if(direction.equals("LEFT")){
+			return MOVE.LEFT;
+		}
+		if(direction.equals("RIGHT")){
+			return MOVE.RIGHT;
+		}
+		if(direction.equals("UP")){
+			return MOVE.UP;
+		}
+		if(direction.equals("DOWN")){
+			return MOVE.DOWN;
+		}
+		
+		
+		
+		
+		
+		
+		
+//		this.mazeIndex = game.getMazeIndex();
+//		this.currentLevel = game.getCurrentLevel();
+//		this.pacmanPosition = game.getPacmanCurrentNodeIndex();
+//		this.pacmanLivesLeft = game.getPacmanNumberOfLivesRemaining();
+//		this.currentScore = game.getScore();
+//		this.totalGameTime = game.getTotalTime();
+//		this.currentLevelTime = game.getCurrentLevelTime();
+//		this.numOfPillsLeft = game.getNumberOfActivePills();
+//		this.numOfPowerPillsLeft = game.getNumberOfActivePowerPills();
+//
+//		if (game.getGhostLairTime(GHOST.BLINKY) == 0) {
+//			this.isBlinkyEdible = game.isGhostEdible(GHOST.BLINKY);
+//			this.blinkyDist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.BLINKY));
+//		}
+//
+//		if (game.getGhostLairTime(GHOST.INKY) == 0) {
+//			this.isInkyEdible = game.isGhostEdible(GHOST.INKY);
+//			this.inkyDist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.INKY));
+//		}
+//
+//		if (game.getGhostLairTime(GHOST.PINKY) == 0) {
+//			this.isPinkyEdible = game.isGhostEdible(GHOST.PINKY);
+//			this.pinkyDist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.PINKY));
+//		}
+//
+//		if (game.getGhostLairTime(GHOST.SUE) == 0) {
+//			this.isSueEdible = game.isGhostEdible(GHOST.SUE);
+//			this.sueDist = game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.SUE));
+//		}
+//
+//		this.blinkyDir = game.getNextMoveTowardsTarget(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.BLINKY), DM.PATH);
+//		this.inkyDir = game.getNextMoveTowardsTarget(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.INKY), DM.PATH);
+//		this.pinkyDir = game.getNextMoveTowardsTarget(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.PINKY), DM.PATH);
+//		this.sueDir = game.getNextMoveTowardsTarget(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.SUE), DM.PATH);
+//
+//		this.numberOfNodesInLevel = game.getNumberOfNodes();
+//		this.numberOfTotalPillsInLevel = game.getNumberOfPills();
+//		this.numberOfTotalPowerPillsInLevel = game.getNumberOfPowerPills();
+		
 		return null;
 	}
 

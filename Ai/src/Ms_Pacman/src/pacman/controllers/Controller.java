@@ -23,10 +23,12 @@ public abstract class Controller<T> implements Runnable
 	 */
 	public Controller()
 	{
+		
 		alive=true;
 		wasSignalled=false;
 		hasComputed=false;
 		threadStillRunning=false;
+		
 	}
 
 	/**
