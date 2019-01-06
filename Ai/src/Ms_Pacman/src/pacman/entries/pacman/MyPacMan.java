@@ -1,5 +1,6 @@
 package pacman.entries.pacman;
 
+import java.io.IOException;
 import java.util.Random;
 
 import dataRecording.DataTuple;
@@ -59,12 +60,95 @@ public class MyPacMan extends Controller<MOVE>
 	
 	int testBliInteSurJulle = -1;
 	
+	AlgoID3 id3;
+	DecisionTree tree;
+	
 	public MyPacMan() {
-		String data = IO.loadFile(FileName);
-		System.out.println(data);
+		id3 = new AlgoID3();
+		try {
+			tree = id3.runAlgorithm("myData/dataset.txt", "DIRECTIONCHOSEN", ";");
+			tree.print();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public MOVE getMove(Game game, long timeDue) {
+		// TODO Auto-generated method stub
+		
+		
+				
+		return null;
+	}
+
+	
+	/*
+	 * 
+	 * The algorithm can be coded inside one single function called Generate_Tree (D, attribute list):
+	 * 
+	 * Create node N. 
+	 * If every tuple in D has the same class C, return N as a leaf node labeled as C.
+	 * Otherwise, if the attribute list is empty, return N as a leaf node labeled with the majority class in D.
+	 * Otherwise:
+	 * 1. Call the attribute selection method on D and the attribute list, in order to choose the current  attribute A: S(D, attribute list) -> A. 
+	 * 2. Label N as A and remove A from the attribute list.
+	 * 3. For each value aj in attribute A:
+	 * 		a) Separate all tuples in D so that attribute A takes the value aj, creating the subset Dj. 
+	 * 		b) If Dj is empty, add a child node to N labeled with the majority class in D.
+	 * 		c) Otherwise, add the resulting node from calling Generate_Tree(Dj, attribute) as a child node  to N. 
+	 * 4. Return N.		
+	 */
+	
+	private Node Generate_Tree(DataTuple[] dataTuples, String[] attribute_list) {
+		// TODO Auto-generated method stub
+		
+		
+		boolean hasSameClass = true;
+		DataTuple compare;
+		if(dataTuples.length != 0)
+			compare = dataTuples[0];
+
+		
+		
+		return null;
 	}
 	
-	public MOVE getMove(Game game, long timeDue) 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+/*	public MOVE getMove(Game game, long timeDue) 
 	{
 		//Place your game logic here to play the game as Ms Pac-Man
 		
@@ -143,14 +227,5 @@ public class MyPacMan extends Controller<MOVE>
 		
 		
 		return newNode;
+	}*/
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}

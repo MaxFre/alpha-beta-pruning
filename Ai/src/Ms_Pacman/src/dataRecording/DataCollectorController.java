@@ -25,6 +25,7 @@ public class DataCollectorController extends HumanController{
 		DataTuple data = new DataTuple(game, move);
 				
 		DataSaverLoader.SavePacManData(data);		
+		DataSaverLoader.SaveMyPacManData(data);
 		return move;
 	}
 

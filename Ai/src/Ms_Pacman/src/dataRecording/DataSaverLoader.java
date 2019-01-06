@@ -11,10 +11,15 @@ import pacman.game.util.*;
 public class DataSaverLoader {
 	
 	private static String FileName = "trainingData.txt";
+
 	
 	public static void SavePacManData(DataTuple data)
 	{
 		IO.saveFile(FileName, data.getSaveString(), true);
+	}
+	
+	public static void SaveMyPacManData(DataTuple data) {
+		IO.saveFile("dataset.txt", data.getDataset(), true);
 	}
 	
 	public static DataTuple[] LoadPacManData()

@@ -17,16 +17,16 @@ package pacman.entries.pacman;
 * SPMF. If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 /**
- * This class represents a node of a decision tree learned by the ID3 algorithm.
- * This is an abstract class having two subclasses representing the two types of
- * nodes: ClassNode and DecisionNode (leafs).
+ * This class represents a class node of a decision tree created by the ID3 algorithm.
  * 
  * @see AlgoID3
+ * @see Node
  * @see DecisionNode
- * @see ClassNode
  * @author Philippe Fournier-Viger
  */
-public  abstract class Node {
-
+public class ClassNode extends Node{
+	/** A class node only indicates a class name. */
+	public String className;
 }

@@ -169,6 +169,20 @@ public class DataTuple {
 
 		return stringbuilder.toString();
 	}
+	
+	public String getDataset() {
+		StringBuilder stringbuilder = new StringBuilder();
+		
+		stringbuilder.append(this.blinkyDist + ";");
+		stringbuilder.append(this.inkyDist + ";");
+		stringbuilder.append(this.pinkyDist + ";");
+		stringbuilder.append(this.sueDist + ";");
+		stringbuilder.append(this.pacmanPosition + ";");
+		stringbuilder.append(this.currentScore + ";");
+		stringbuilder.append(this.DirectionChosen + ";");
+		
+		return stringbuilder.toString();
+	}
 
 	/**
 	 * Used to normalize distances. Done via min-max normalization. Supposes
