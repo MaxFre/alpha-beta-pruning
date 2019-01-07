@@ -173,6 +173,11 @@ public class DataTuple {
 	public String getDataset() {
 		StringBuilder stringbuilder = new StringBuilder();
 		
+		stringbuilder.append(this.currentLevel + ";");
+		stringbuilder.append(this.isInkyEdible + ";");
+		stringbuilder.append(this.isBlinkyEdible + ";");	
+		stringbuilder.append(this.isSueEdible + ";");
+		stringbuilder.append(this.isPinkyEdible + ";");
 		stringbuilder.append(this.blinkyDist + ";");
 		stringbuilder.append(this.inkyDist + ";");
 		stringbuilder.append(this.pinkyDist + ";");
@@ -180,6 +185,7 @@ public class DataTuple {
 		stringbuilder.append(this.pacmanPosition + ";");
 		stringbuilder.append(this.currentScore + ";");
 		stringbuilder.append(this.DirectionChosen + ";");
+		
 		
 		return stringbuilder.toString();
 	}

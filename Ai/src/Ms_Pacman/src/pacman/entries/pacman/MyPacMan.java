@@ -64,11 +64,21 @@ public class MyPacMan extends Controller<MOVE>
 	
 	AlgoID3 id3;
 	DecisionTree tree;
+	boolean firstAgentsTurn;
 	
-	public MyPacMan() {
+	public MyPacMan(boolean firstAgentsTurn) {
+		this.firstAgentsTurn = firstAgentsTurn;
+		
 		id3 = new AlgoID3();
 		try {
-			tree = id3.runAlgorithm("myData/dataset.txt", "DIRECTIONCHOSEN", ";");
+			if(firstAgentsTurn){
+				tree = id3.runAlgorithm("myData/dataset.txt", "DIRECTIONCHOSEN", ";");
+				System.out.println("pacman using dataset");
+			}
+			else{
+				tree = id3.runAlgorithm("myData/dataset2.txt", "DIRECTIONCHOSEN", ";");
+				System.out.println("pacman using dataset2");
+			}
 			tree.print();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -82,8 +92,18 @@ public class MyPacMan extends Controller<MOVE>
 	public MOVE getMove(Game game, long timeDue) {
 		// TODO Auto-generated method stub
 		
-//		BLINKYDIST;INKYDIST;PINKYDIST;SUEDIST;PACMANPOSITION;CURRENTSCORE;DIRECTIONCHOSEN;
+//		CURRENTLEVEL;ISINKYEDIBLE;ISBLINKYEDIBLE;ISSUEEDIBLE;ISPINKYEDIBLE;BLINKYDIST;INKYDIST;PINKYDIST;SUEDIST;PACMANPOSITION;CURRENTSCORE;DIRECTIONCHOSEN;
 			
+		
+		String currentlevel = String.valueOf(game.getCurrentLevel());
+		
+		// Ghost edible
+		String blinkyED = String.valueOf(game.isGhostEdible(GHOST.BLINKY));
+		String INKYED = String.valueOf(game.isGhostEdible(GHOST.INKY));
+		String PINKYED =  String.valueOf(game.isGhostEdible(GHOST.PINKY));
+		String SUEED =  String.valueOf(game.isGhostEdible(GHOST.SUE));
+		
+		
 		// Ghost dist
 		String blinkyDist = String.valueOf(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.BLINKY)));
 		String INKYDIST = String.valueOf(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(GHOST.INKY)));
@@ -98,11 +118,11 @@ public class MyPacMan extends Controller<MOVE>
 		
 		
 //		String[] toFindMove = {blinkyDist ,INKYDIST,PINKYDIST,SUEDIST, pacmanPos,currentScore};
-		String[] toFindMove = {blinkyDist ,INKYDIST,PINKYDIST,SUEDIST, pacmanPos,currentScore};
+		String[] toFindMove = {currentlevel,INKYED,blinkyED,PINKYED,SUEED, blinkyDist ,INKYDIST,PINKYDIST,SUEDIST, pacmanPos,currentScore};
 		
 		String direction = tree.predictTargetAttributeValue(toFindMove);
 		
-		System.out.println("MOVE: " + direction);
+//		System.out.println("MOVE: " + direction);
 		
 		
 		if(direction == null){

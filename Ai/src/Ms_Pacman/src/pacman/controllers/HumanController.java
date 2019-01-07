@@ -9,7 +9,7 @@ import pacman.game.Constants.MOVE;
  */
 public class HumanController extends Controller<MOVE>
 {
-	public KeyBoardInput input;
+	public static KeyBoardInput input;
     
     public HumanController(KeyBoardInput input)
     {

@@ -2,7 +2,9 @@ package pacman;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -40,14 +42,31 @@ import static pacman.game.Constants.*;
 @SuppressWarnings("unused")
 public class Executor
 {	
+		
+	static Executor exec;
+	static boolean visual=true;
+	int agent1Score = 0;
+	int agent2Score = 0;
+	static boolean firstAgentsTurn = true;
+	ArrayList<Integer> calcAvarage = new ArrayList<Integer>();
+	ArrayList<Integer> allTheAvarageScores = new ArrayList<Integer>();
+	
 	/**
 	 * The main method. Several options are listed - simply remove comments to use the option you want.
 	 *
 	 * @param args the command line arguments
 	 */
+	
+	public void startNew(){
+		
+//		exec.runGameTimed(new DataCollectorController(new MyPacMan(firstAgentsTurn),firstAgentsTurn),new StarterGhosts(),visual);
+		
+		exec.runGameTimed(new MyPacMan(firstAgentsTurn), new StarterGhosts(), visual);
+	}
+	
 	public static void main(String[] args)
 	{
-		Executor exec = new Executor();
+		 exec = new Executor();
 
 		
 		//run multiple games in batch mode - good for testing.
@@ -64,17 +83,20 @@ public class Executor
 		
 		///*
 		//run the game in asynchronous mode.
-		boolean visual=true;
+		
 //		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
 //		exec.runGameTimed(new StarterPacMan(),new StarterGhosts(),visual);
 		
 		
 		
 		// de vi använder!
+//		exec.runGameTimed(new DataCollectorController(new KeyBoardInput()),new StarterGhosts(),visual);
 //		exec.runGameTimed(new HumanController(new KeyBoardInput()), new StarterGhosts(), visual);
-		for(int i = 0; i<10; i++){
-			exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
-		}
+		
+//		exec.runGameTimed(new DataCollectorController(new MyPacMan(firstAgentsTurn),firstAgentsTurn),new StarterGhosts(),visual);
+		
+		exec.runGameTimed(new MyPacMan(firstAgentsTurn), new StarterGhosts(), visual);
+		
 
 		
 		
@@ -96,7 +118,7 @@ public class Executor
 		 */
 		
 		//run game for data collection
-//		exec.runGameTimed(new DataCollectorController(new KeyBoardInput()),new StarterGhosts(),visual);
+		
 	}
 	
     /**
@@ -194,7 +216,8 @@ public class Executor
 
 			try
 			{
-				Thread.sleep(DELAY);
+				// change gamespeed! Thread.sleep(DELAY);  // Thread.sleep(2);
+				Thread.sleep(2);
 			}
 			catch(InterruptedException e)
 			{
@@ -209,6 +232,113 @@ public class Executor
 		
 		pacManController.terminate();
 		ghostController.terminate();
+		
+
+		String filenameToBeOverWritten = "";
+		String filenameToTakeFrom = "";
+		
+		if(firstAgentsTurn){
+			agent1Score = game.getScore();
+			System.out.println("agent1Score: " + agent1Score);
+		}
+	
+		if(!firstAgentsTurn){
+			agent2Score = game.getScore();
+			System.out.println("agent2Score: " + agent2Score);
+			
+			if(agent1Score>agent2Score){
+				filenameToBeOverWritten = "myData/dataset2.txt";
+				filenameToTakeFrom = "myData/dataset.txt";
+				
+				System.out.println("Agent1 won");
+			}
+			
+			if(agent1Score<agent2Score){
+				filenameToBeOverWritten = "myData/dataset.txt";
+				filenameToTakeFrom = "myData/dataset2.txt";
+				System.out.println("Agent2 won");
+			}
+			
+			if(agent1Score==agent2Score){
+				filenameToBeOverWritten = "myData/dataset.txt";
+				filenameToTakeFrom = "myData/dataset2.txt";
+			}
+		
+		
+//		// tömmer filen först
+//		System.out.println("emptying this file: "+ filenameToBeOverWritten);
+//		PrintWriter writer = null;
+//		try {
+//			writer = new PrintWriter(filenameToBeOverWritten);
+//			writer.print("");
+//			writer.close();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//	
+//		
+//		// skriver över den
+//		String everything = null;
+//		try {
+//		BufferedReader br = new BufferedReader(new FileReader(filenameToTakeFrom));
+//	
+//		    StringBuilder sb = new StringBuilder();
+//		    String line;
+//			try {
+//				line = br.readLine();
+//			
+//
+//		    while (line != null) {
+//		        sb.append(line);
+//		        sb.append(System.lineSeparator());
+//		        line = br.readLine();
+//		    }
+//		     everything = sb.toString();
+//		    
+//		} finally {
+//			   br.close();
+//			   
+//				System.out.println("Writing new data to this file: "+ filenameToBeOverWritten);
+//				PrintWriter writer2 = null;
+//				try {
+//					writer2 = new PrintWriter(filenameToBeOverWritten);
+//					writer2.print(everything);
+//					writer2.close();
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//		}} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		calcAvarage.add(agent1Score);
+		calcAvarage.add(agent2Score);
+		int totalSum = 0;		
+		for(int i = 0; i<calcAvarage.size(); i++){
+			totalSum += calcAvarage.get(i);
+		}
+		int theN = 0;
+		allTheAvarageScores.add(totalSum/calcAvarage.size());
+		System.out.println("------------------------");
+		System.out.println("AVARAGE SCORE: " + (totalSum/calcAvarage.size()));
+		for(int i = 0; i<allTheAvarageScores.size(); i++){
+			theN++;
+			if(theN==40){
+				System.out.println("");
+				theN = 0;
+			}
+			System.out.print(allTheAvarageScores.get(i) + ",");
+		}
+		System.out.println("\n-------------------------");
+		}
+		firstAgentsTurn = !firstAgentsTurn;
+		
+
+		startNew();
+		
 	}
 	
     /**

@@ -1,6 +1,7 @@
 package dataRecording;
 
 import pacman.controllers.*;
+import pacman.entries.pacman.MyPacMan;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
@@ -13,19 +14,33 @@ import pacman.game.Constants.MOVE;
  *
  */
 public class DataCollectorController extends HumanController{
+	MyPacMan pacman;
+	boolean firstAgentsTurn;
+	String filename = "dataset.txt";
 	
 	public DataCollectorController(KeyBoardInput input){
 		super(input);
 	}
-	
+	public DataCollectorController(MyPacMan pacman, boolean firstAgentsTurn){		
+		super(input);
+		this.pacman = pacman;
+		this.firstAgentsTurn = firstAgentsTurn;
+	}
 	@Override
 	public MOVE getMove(Game game, long dueTime) {
-		MOVE move = super.getMove(game, dueTime);
-		
+//		MOVE move = super.getMove(game, dueTime);				// if player
+		MOVE move = pacman.getMove(game, dueTime);				// if AI
 		DataTuple data = new DataTuple(game, move);
 				
-		DataSaverLoader.SavePacManData(data);		
-		DataSaverLoader.SaveMyPacManData(data);
+		if(firstAgentsTurn){
+			filename = "dataset.txt";
+		}
+		if(!firstAgentsTurn){
+			filename = "dataset2.txt";
+		}
+		
+//		DataSaverLoader.SavePacManData(data,filename);		
+		DataSaverLoader.SaveMyPacManData(data,filename);
 		return move;
 	}
 
