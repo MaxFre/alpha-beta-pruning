@@ -66,20 +66,14 @@ public class MyPacMan extends Controller<MOVE>
 	DecisionTree tree;
 	boolean firstAgentsTurn;
 	
-	public MyPacMan(boolean firstAgentsTurn) {
-		this.firstAgentsTurn = firstAgentsTurn;
+	public MyPacMan() {
 		
 		id3 = new AlgoID3();
-		try {
-			if(firstAgentsTurn){
-				tree = id3.runAlgorithm("myData/dataset.txt", "DIRECTIONCHOSEN", ";");
-				System.out.println("pacman using dataset");
-			}
-			else{
+		try {	
 				tree = id3.runAlgorithm("myData/dataset2.txt", "DIRECTIONCHOSEN", ";");
 				System.out.println("pacman using dataset2");
-			}
-			tree.print();
+			
+//			tree.print();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,7 +86,7 @@ public class MyPacMan extends Controller<MOVE>
 	public MOVE getMove(Game game, long timeDue) {
 		// TODO Auto-generated method stub
 		
-//		CURRENTLEVEL;ISINKYEDIBLE;ISBLINKYEDIBLE;ISSUEEDIBLE;ISPINKYEDIBLE;BLINKYDIST;INKYDIST;PINKYDIST;SUEDIST;PACMANPOSITION;CURRENTSCORE;DIRECTIONCHOSEN;
+//		CURRENTLEVEL;ISINKYEDIBLE;ISBLINKYEDIBLE;ISSUEEDIBLE;ISPINKYEDIBLE;BLINKYDIST;INKYDIST;PINKYDIST;SUEDIST;PACMANPOSITION;NumberOfNodes;DIRECTIONCHOSEN;
 			
 		
 		String currentlevel = String.valueOf(game.getCurrentLevel());

@@ -42,7 +42,8 @@ import static pacman.game.Constants.*;
 @SuppressWarnings("unused")
 public class Executor
 {	
-		
+	int highestScore = 1100;
+	int howManyTimesAboveLvl0 = 0;
 	static Executor exec;
 	static boolean visual=true;
 	int agent1Score = 0;
@@ -59,9 +60,9 @@ public class Executor
 	
 	public void startNew(){
 		
-//		exec.runGameTimed(new DataCollectorController(new MyPacMan(firstAgentsTurn),firstAgentsTurn),new StarterGhosts(),visual);
+//		exec.runGameTimed(new DataCollectorController(new MyPacMan()),new StarterGhosts(),visual);
 		
-		exec.runGameTimed(new MyPacMan(firstAgentsTurn), new StarterGhosts(), visual);
+		exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
 	}
 	
 	public static void main(String[] args)
@@ -89,13 +90,16 @@ public class Executor
 		
 		
 		
-		// de vi använder!
+		// HUMAN with recording
 //		exec.runGameTimed(new DataCollectorController(new KeyBoardInput()),new StarterGhosts(),visual);
 //		exec.runGameTimed(new HumanController(new KeyBoardInput()), new StarterGhosts(), visual);
 		
-//		exec.runGameTimed(new DataCollectorController(new MyPacMan(firstAgentsTurn),firstAgentsTurn),new StarterGhosts(),visual);
+		 
+		// ai with recording
+//		exec.runGameTimed(new DataCollectorController(new MyPacMan()),new StarterGhosts(),visual);
 		
-		exec.runGameTimed(new MyPacMan(firstAgentsTurn), new StarterGhosts(), visual);
+		// only ai, no recording
+		exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
 		
 
 		
@@ -233,89 +237,88 @@ public class Executor
 		pacManController.terminate();
 		ghostController.terminate();
 		
+		String filenameToBeOverWritten = "myData/dataset2.txt";
+		String filenameToTakeFrom = "myData/dataset.txt";
 
-		String filenameToBeOverWritten = "";
-		String filenameToTakeFrom = "";
-		
-		if(firstAgentsTurn){
-			agent1Score = game.getScore();
-			System.out.println("agent1Score: " + agent1Score);
+		if (game.getCurrentLevel() > 0) {
+			howManyTimesAboveLvl0++;
+			
 		}
-	
-		if(!firstAgentsTurn){
-			agent2Score = game.getScore();
-			System.out.println("agent2Score: " + agent2Score);
-			
-			if(agent1Score>agent2Score){
-				filenameToBeOverWritten = "myData/dataset2.txt";
-				filenameToTakeFrom = "myData/dataset.txt";
-				
-				System.out.println("Agent1 won");
+
+		agent1Score = game.getScore();
+		
+		if(game.getCurrentLevel() == 1){
+			agent1Score = agent1Score+10000;
+		}
+		if(game.getCurrentLevel() == 2){
+			agent1Score = agent1Score+20000;
+		}
+		System.out.println("agent1Score: " + agent1Score);
+
+		int treshold = (int) (highestScore*0.8);
+		System.out.println("threshold: " + treshold);
+		if (agent1Score >= treshold) {
+			filenameToBeOverWritten = "myData/dataset.txt";
+			filenameToTakeFrom = "myData/dataset2.txt";	
+			if(agent1Score>highestScore){
+				highestScore = agent1Score;	
+				System.out.println("NEW BEST!!");
 			}
 			
-			if(agent1Score<agent2Score){
-				filenameToBeOverWritten = "myData/dataset.txt";
-				filenameToTakeFrom = "myData/dataset2.txt";
-				System.out.println("Agent2 won");
-			}
+			System.out.println("ADDING THIS RUN TO THE RECORD!");
+		}
+		
+//		//  tömmer filen först
+		System.out.println("emptying this file: " + filenameToBeOverWritten);
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(filenameToBeOverWritten);
+			writer.print("");
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+//		// // skriver över den
+		String everything = null;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filenameToTakeFrom));
+
+		    StringBuilder sb = new StringBuilder();
+		    String line;
+			try {
+				line = br.readLine();
 			
-			if(agent1Score==agent2Score){
-				filenameToBeOverWritten = "myData/dataset.txt";
-				filenameToTakeFrom = "myData/dataset2.txt";
-			}
+
+		    while (line != null) {
+		        sb.append(line);
+		        sb.append(System.lineSeparator());
+		        line = br.readLine();
+		    }
+		     everything = sb.toString();
+		    
+		} finally {
+			   br.close();
+			   
+				System.out.println("Writing new data to this file: "+ filenameToBeOverWritten);
+				PrintWriter writer2 = null;
+				try {
+					writer2 = new PrintWriter(filenameToBeOverWritten);
+					writer2.print(everything);
+					writer2.close();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 		
 		
-//		// tömmer filen först
-//		System.out.println("emptying this file: "+ filenameToBeOverWritten);
-//		PrintWriter writer = null;
-//		try {
-//			writer = new PrintWriter(filenameToBeOverWritten);
-//			writer.print("");
-//			writer.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//	
-//		
-//		// skriver över den
-//		String everything = null;
-//		try {
-//		BufferedReader br = new BufferedReader(new FileReader(filenameToTakeFrom));
-//	
-//		    StringBuilder sb = new StringBuilder();
-//		    String line;
-//			try {
-//				line = br.readLine();
-//			
-//
-//		    while (line != null) {
-//		        sb.append(line);
-//		        sb.append(System.lineSeparator());
-//		        line = br.readLine();
-//		    }
-//		     everything = sb.toString();
-//		    
-//		} finally {
-//			   br.close();
-//			   
-//				System.out.println("Writing new data to this file: "+ filenameToBeOverWritten);
-//				PrintWriter writer2 = null;
-//				try {
-//					writer2 = new PrintWriter(filenameToBeOverWritten);
-//					writer2.print(everything);
-//					writer2.close();
-//				} catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//		}} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		calcAvarage.add(agent1Score);
-		calcAvarage.add(agent2Score);
 		int totalSum = 0;		
 		for(int i = 0; i<calcAvarage.size(); i++){
 			totalSum += calcAvarage.get(i);
@@ -332,9 +335,9 @@ public class Executor
 			}
 			System.out.print(allTheAvarageScores.get(i) + ",");
 		}
+		System.out.println("\nhighest score: " + highestScore);
+		System.out.println("Times above lvl 0: " + howManyTimesAboveLvl0);
 		System.out.println("\n-------------------------");
-		}
-		firstAgentsTurn = !firstAgentsTurn;
 		
 
 		startNew();

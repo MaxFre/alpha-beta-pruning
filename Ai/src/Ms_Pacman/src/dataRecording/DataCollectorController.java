@@ -15,29 +15,21 @@ import pacman.game.Constants.MOVE;
  */
 public class DataCollectorController extends HumanController{
 	MyPacMan pacman;
-	boolean firstAgentsTurn;
-	String filename = "dataset.txt";
+	String filename = "dataset2.txt";
 	
 	public DataCollectorController(KeyBoardInput input){
 		super(input);
 	}
-	public DataCollectorController(MyPacMan pacman, boolean firstAgentsTurn){		
+	public DataCollectorController(MyPacMan pacman){		
 		super(input);
 		this.pacman = pacman;
-		this.firstAgentsTurn = firstAgentsTurn;
 	}
 	@Override
 	public MOVE getMove(Game game, long dueTime) {
 //		MOVE move = super.getMove(game, dueTime);				// if player
 		MOVE move = pacman.getMove(game, dueTime);				// if AI
 		DataTuple data = new DataTuple(game, move);
-				
-		if(firstAgentsTurn){
-			filename = "dataset.txt";
-		}
-		if(!firstAgentsTurn){
-			filename = "dataset2.txt";
-		}
+
 		
 //		DataSaverLoader.SavePacManData(data,filename);		
 		DataSaverLoader.SaveMyPacManData(data,filename);
