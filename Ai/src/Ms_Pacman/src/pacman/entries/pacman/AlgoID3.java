@@ -1,7 +1,5 @@
 package pacman.entries.pacman;
 
-
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,31 +11,32 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-
 public class AlgoID3 {
 	// the list of attributes
-	private String[] allAttributes; 
+	private String[] allAttributes;
 	// the position of the target attribute in the list of attributes
-	private int indexTargetAttribute = -1; 
+	private int indexTargetAttribute = -1;
 	// the set of values for the target attribute
-	private Set<String> targetAttributeValues = new HashSet<String>(); 
-	
+	private Set<String> targetAttributeValues = new HashSet<String>();
+
 	// for statistics
 	private long startTime; // start time of the latest execution
-	private long endTime;   // end time of the latest execution
+	private long endTime; // end time of the latest execution
 
 	/**
 	 * Create a decision tree from a set of training instances.
-	 * @param input path to an input file containing training instances
-	 * @param targetAttribute the target attribute (that will be used for classification)
-	 * @param separator  the separator in the input file (e.g. space).
+	 * 
+	 * @param input           path to an input file containing training instances
+	 * @param targetAttribute the target attribute (that will be used for
+	 *                        classification)
+	 * @param separator       the separator in the input file (e.g. space).
 	 * @return a decision tree
 	 * @throws IOException exception if error reading the file
 	 */
-	public DecisionTree runAlgorithm(String input, String targetAttribute,String separator) throws IOException {
+	public DecisionTree runAlgorithm(String input, String targetAttribute, String separator) throws IOException {
 		// record the start time
 		startTime = System.currentTimeMillis();
-		
+
 		// create an empty decision tree
 		DecisionTree tree = new DecisionTree();
 
@@ -49,7 +48,7 @@ public class AlgoID3 {
 		// At the same time identify the position of the target attribute and
 		// other attributes.
 		allAttributes = line.split(separator);
-		
+
 		// make an array to store the attributes except the target attribute
 		int[] remainingAttributes = new int[allAttributes.length - 1];
 		int pos = 0;
@@ -68,15 +67,13 @@ public class AlgoID3 {
 
 		// Read instances into memory (line by line until end of file)
 		List<String[]> instances = new ArrayList<String[]>();
-		while (((line = reader.readLine()) != null)) { 
-			// if the line is  a comment, is  empty or is a
+		while (((line = reader.readLine()) != null)) {
+			// if the line is a comment, is empty or is a
 			// kind of metadata
-			if (line.isEmpty() == true ||
-					line.charAt(0) == '#' || line.charAt(0) == '%'
-							|| line.charAt(0) == '@') {
+			if (line.isEmpty() == true || line.charAt(0) == '#' || line.charAt(0) == '%' || line.charAt(0) == '@') {
 				continue;
 			}
-			
+
 			// split the line
 			String[] lineSplit = line.split(separator);
 			// process the instance
@@ -87,21 +84,22 @@ public class AlgoID3 {
 		reader.close(); // close input file
 
 		// (2) Start the recusive process
-		
+
 		// create the tree
 		tree.root = id3(remainingAttributes, instances);
 		tree.allAttributes = allAttributes;
-		
-		endTime = System.currentTimeMillis();  // record end time
-		
+
+		endTime = System.currentTimeMillis(); // record end time
+
 		return tree; // return the tree
 	}
 
 	/**
 	 * Method to create a subtree according to a set of attributes and training
 	 * instances.
+	 * 
 	 * @param remainingAttributes remaining attributes to create the tree
-	 * @param instances a list of training instances
+	 * @param instances           a list of training instances
 	 * @return node of the subtree created
 	 */
 	private Node id3(int[] remainingAttributes, List<String[]> instances) {
@@ -109,14 +107,13 @@ public class AlgoID3 {
 		// return a class node with the most common value in the instances
 		if (remainingAttributes.length == 0) {
 			// Count the frequency of class
-			Map<String, Integer> targetValuesFrequency = calculateFrequencyOfAttributeValues(
-					instances, indexTargetAttribute);
-			
+			Map<String, Integer> targetValuesFrequency = calculateFrequencyOfAttributeValues(instances,
+					indexTargetAttribute);
+
 			// Loop over the values to find the class with the highest frequency
 			int highestCount = 0;
 			String highestName = "";
-			for (Entry<String, Integer> entry : targetValuesFrequency
-					.entrySet()) {
+			for (Entry<String, Integer> entry : targetValuesFrequency.entrySet()) {
 				// if the frequency is higher
 				if (entry.getValue() > highestCount) {
 					highestCount = entry.getValue();
@@ -131,14 +128,13 @@ public class AlgoID3 {
 
 		// Calculate the frequency of each target attribute value and
 		// at the same time check if there is a single class.
-		Map<String, Integer> targetValuesFrequency = calculateFrequencyOfAttributeValues(
-				instances, indexTargetAttribute);
+		Map<String, Integer> targetValuesFrequency = calculateFrequencyOfAttributeValues(instances,
+				indexTargetAttribute);
 
 		// if all instances are from the same class
 		if (targetValuesFrequency.entrySet().size() == 1) {
 			ClassNode classNode = new ClassNode();
-			classNode.className = (String) targetValuesFrequency.keySet()
-					.toArray()[0];
+			classNode.className = (String) targetValuesFrequency.keySet().toArray()[0];
 			return classNode;
 		}
 
@@ -149,7 +145,7 @@ public class AlgoID3 {
 			// calculate frequency
 			Integer frequencyInt = targetValuesFrequency.get(value);
 			// if the frequency is not zero
-			if(frequencyInt != null) {
+			if (frequencyInt != null) {
 
 				// calculate the frequency has a double
 				double frequencyDouble = frequencyInt / (double) instances.size();
@@ -174,16 +170,15 @@ public class AlgoID3 {
 				attributeWithHighestGain = attribute;
 			}
 		}
-		
-		
+
 		// if the highest gain is 0....
 		if (highestGain == 0) {
 			ClassNode classNode = new ClassNode();
 			// take the most frequent classes
 			int topFrequency = 0;
 			String className = null;
-			for(Entry<String, Integer> entry: targetValuesFrequency.entrySet()) {
-				if(entry.getValue() > topFrequency) {
+			for (Entry<String, Integer> entry : targetValuesFrequency.entrySet()) {
+				if (entry.getValue() > topFrequency) {
 					topFrequency = entry.getValue();
 					className = entry.getKey();
 				}
@@ -229,64 +224,56 @@ public class AlgoID3 {
 		int index = 0;
 		for (Entry<String, List<String[]>> partition : partitions.entrySet()) {
 			decisionNode.attributeValues[index] = partition.getKey();
-			decisionNode.nodes[index] = id3(newRemainingAttribute,
-					partition.getValue()); // recursive call
+			decisionNode.nodes[index] = id3(newRemainingAttribute, partition.getValue()); // recursive call
 			index++;
 		}
-		
+
 		// return the root node of the subtree created
 		return decisionNode;
 	}
 
 	/**
 	 * Calculate the information gain of an attribute for a set of instance
-	 * @param attributePos the position of the attribute
-	 * @param instances a list of instances
+	 * 
+	 * @param attributePos  the position of the attribute
+	 * @param instances     a list of instances
 	 * @param globalEntropy the global entropy
 	 * @return the gain
 	 */
-	private double calculateGain(int attributePos, List<String[]> instances,
-			double globalEntropy) {
+	private double calculateGain(int attributePos, List<String[]> instances, double globalEntropy) {
 		// Count the frequency of each value for the attribute
-		Map<String, Integer> valuesFrequency = calculateFrequencyOfAttributeValues(
-				instances, attributePos);
+		Map<String, Integer> valuesFrequency = calculateFrequencyOfAttributeValues(instances, attributePos);
 
 		// Calculate the gain
 		double sum = 0;
 		// for each value
 		for (Entry<String, Integer> entry : valuesFrequency.entrySet()) {
-			// make the sum 
-			sum += entry.getValue()
-					/ ((double) instances.size())
-					* calculateEntropyIfValue(instances, attributePos,
-							entry.getKey());
+			// make the sum
+			sum += entry.getValue() / ((double) instances.size())
+					* calculateEntropyIfValue(instances, attributePos, entry.getKey());
 		}
 		// subtract the sum from the global entropy
 		return globalEntropy - sum;
 	}
 
 	/**
-	 * Calculate the entropy for the target attribute, if a given attribute has
-	 * a given value.
+	 * Calculate the entropy for the target attribute, if a given attribute has a
+	 * given value.
 	 * 
-	 * @param instances
-	 *            : list of instances
-	 * @param attributeIF
-	 *            : the given attribute
-	 * @param valueIF
-	 *            : the given value
+	 * @param instances   : list of instances
+	 * @param attributeIF : the given attribute
+	 * @param valueIF     : the given value
 	 * @return entropy
 	 */
-	private double calculateEntropyIfValue(List<String[]> instances,
-			int attributeIF, String valueIF) {
-		
+	private double calculateEntropyIfValue(List<String[]> instances, int attributeIF, String valueIF) {
+
 		// variable to count the number of instance having the value for that
 		// attribute
 		int instancesCount = 0;
-		
+
 		// variable to count the frequency of each value
 		Map<String, Integer> valuesFrequency = new HashMap<String, Integer>();
-		
+
 		// for each instance
 		for (String[] instance : instances) {
 			// if that instance has the value for the attribute
@@ -296,12 +283,11 @@ public class AlgoID3 {
 				if (valuesFrequency.get(targetValue) == null) {
 					valuesFrequency.put(targetValue, 1);
 				} else {
-					valuesFrequency.put(targetValue,
-							valuesFrequency.get(targetValue) + 1);
+					valuesFrequency.put(targetValue, valuesFrequency.get(targetValue) + 1);
 				}
 				// increase the number of instance having the value for that
 				// attribute
-				instancesCount++; 
+				instancesCount++;
 			}
 		}
 		// calculate entropy
@@ -324,20 +310,17 @@ public class AlgoID3 {
 	 * This method calculates the frequency of each value for an attribute in a
 	 * given set of instances
 	 * 
-	 * @param instances
-	 *            A set of instances
-	 * @param indexAttribute
-	 *            The attribute.
+	 * @param instances      A set of instances
+	 * @param indexAttribute The attribute.
 	 * @return A map where the keys are attributes and values are the number of
 	 *         times that the value appeared in the set of instances.
 	 */
-	private Map<String, Integer> calculateFrequencyOfAttributeValues(
-			List<String[]> instances, int indexAttribute) {
+	private Map<String, Integer> calculateFrequencyOfAttributeValues(List<String[]> instances, int indexAttribute) {
 		// A map to calculate the frequency of each value:
 		// Key: a string indicating a value
-		// Value:  the frequency
+		// Value: the frequency
 		Map<String, Integer> targetValuesFrequency = new HashMap<String, Integer>();
-		
+
 		// for each instance of the training set
 		for (String[] instance : instances) {
 			// get the value of the attribute for that instance
@@ -346,8 +329,7 @@ public class AlgoID3 {
 			if (targetValuesFrequency.get(targetValue) == null) {
 				targetValuesFrequency.put(targetValue, 1);
 			} else {
-				targetValuesFrequency.put(targetValue,
-						targetValuesFrequency.get(targetValue) + 1);
+				targetValuesFrequency.put(targetValue, targetValuesFrequency.get(targetValue) + 1);
 			}
 		}
 		// return the map
@@ -358,10 +340,8 @@ public class AlgoID3 {
 	 * Print statistics about the execution of this algorithm
 	 */
 	public void printStatistics() {
-		System.out.println("Time to construct decision tree = "
-				+ (endTime - startTime) + " ms");
-		System.out.println("Target attribute = "
-				+ allAttributes[indexTargetAttribute]);
+		System.out.println("Time to construct decision tree = " + (endTime - startTime) + " ms");
+		System.out.println("Target attribute = " + allAttributes[indexTargetAttribute]);
 		System.out.print("Other attributes = ");
 		for (String attribute : allAttributes) {
 			if (!attribute.equals(allAttributes[indexTargetAttribute])) {
