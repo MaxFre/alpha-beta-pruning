@@ -27,7 +27,7 @@ public class DataSaverLoader {
 		String data = IO.loadFile(FileName);
 		String[] dataLine = data.split("\n");
 		DataTuple[] dataTuples = new DataTuple[dataLine.length];
-		
+				
 		for(int i = 0; i < dataLine.length; i++)
 		{
 			dataTuples[i] = new DataTuple(dataLine[i]);

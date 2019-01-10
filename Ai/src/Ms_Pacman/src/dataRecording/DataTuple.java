@@ -49,6 +49,7 @@ public class DataTuple {
 	public int pinkyDist = -1;
 	public int sueDist = -1;
 
+	public MOVE directionChosen;
 	public MOVE blinkyDir;
 	public MOVE inkyDir;
 	public MOVE pinkyDir;
@@ -110,8 +111,10 @@ public class DataTuple {
 	public DataTuple(String data) {
 		String[] dataSplit = data.split(";");
 
-		this.DirectionChosen = MOVE.valueOf(dataSplit[0]);
+//		this.DirectionChosen = MOVE.valueOf(dataSplit[0]);
 
+		System.out.println(dataSplit.length);
+		if(dataSplit.length>1){
 		this.mazeIndex = Integer.parseInt(dataSplit[1]);
 		this.currentLevel = Integer.parseInt(dataSplit[2]);
 		this.pacmanPosition = Integer.parseInt(dataSplit[3]);
@@ -136,6 +139,34 @@ public class DataTuple {
 		this.numberOfNodesInLevel = Integer.parseInt(dataSplit[22]);
 		this.numberOfTotalPillsInLevel = Integer.parseInt(dataSplit[23]);
 		this.numberOfTotalPowerPillsInLevel = Integer.parseInt(dataSplit[24]);
+		
+		}
+	}
+	
+	
+	public DataTuple(String data, boolean test) {
+		String[] dataSplit = data.split(";");
+		
+//		CURRENTLEVEL;ISINKYEDIBLE;ISBLINKYEDIBLE;ISSUEEDIBLE;ISPINKYEDIBLE;BLINKYDIST;INKYDIST;
+//		PINKYDIST;SUEDIST;PACMANPOSITION;CURRENTSCORE;DIRECTIONCHOSEN;
+
+//		for(int i = 0; i<dataSplit.length; i++){
+//			System.out.println(i+"touple: " + dataSplit[i] );
+//		}
+		
+		this.currentLevel = Integer.parseInt(dataSplit[0]);	
+		this.isInkyEdible = Boolean.parseBoolean(dataSplit[1]);
+		this.isBlinkyEdible = Boolean.parseBoolean(dataSplit[2]);
+		this.isPinkyEdible = Boolean.parseBoolean(dataSplit[4]);
+		this.isSueEdible = Boolean.parseBoolean(dataSplit[3]);
+		this.blinkyDist = Integer.parseInt(dataSplit[5]);
+		this.inkyDist = Integer.parseInt(dataSplit[6]);
+		this.pinkyDist = Integer.parseInt(dataSplit[7]);
+		this.sueDist = Integer.parseInt(dataSplit[8]);
+		this.pacmanPosition = Integer.parseInt(dataSplit[9]);
+		this.currentScore = Integer.parseInt(dataSplit[10]);
+		this.DirectionChosen = MOVE.valueOf(dataSplit[11]);
+	
 	}
 
 	public String getSaveString() {

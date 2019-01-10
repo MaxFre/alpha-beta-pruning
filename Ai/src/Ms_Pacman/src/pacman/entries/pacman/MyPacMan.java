@@ -1,6 +1,9 @@
 package pacman.entries.pacman;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 import dataRecording.DataTuple;
@@ -46,26 +49,85 @@ public class MyPacMan extends Controller<MOVE> {
 	private MOVE[] allMoves = MOVE.values();
 	private Random rand = new Random();
 
-	private static String FileName = "trainingData.txt";
+	private static String FileName = "dataset2.txt";
 	DataTuple[] dataTuples;
 
 	AlgoID3 id3;
 	DecisionTree tree;
 	boolean firstAgentsTurn;
-
+	int check = 0;
+	
 	public MyPacMan() {
 
 		id3 = new AlgoID3();
 		try {
+			
+			
 			tree = id3.runAlgorithm("myData/dataset2.txt", "DIRECTIONCHOSEN", ";");
 			System.out.println("pacman using dataset2");
-
-//			tree.print();
+			tree.print();
+			calcAccuracy();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
+	
+	
+	public void calcAccuracy(){
+		
+		int correctAnswers = 0;
+		
+		String data = IO.loadFile(FileName);
+		String[] dataLine = data.split("\n");
+		String[] dataTuples = new String[dataLine.length];
+				
+		for(int i = 1; i < dataLine.length; i++)
+		{
+			dataTuples[i] = dataLine[i];
+		}
+		
+		double treshold = dataTuples.length*0.75;
+	
+		
+		for(int i = (int) treshold; i<dataTuples.length; i++){
+			check++;
+		
+		String toSend = dataTuples[i];
+
+		
+		 System.out.println("toSend: " + toSend);
+
+		
+		String[] dataSplit = toSend.split(";");
+		
+		String[] toSend2 = new String[dataSplit.length-1]; 
+		
+		
+		for(int x = 0; x<dataSplit.length-1; x++){
+			toSend2[x] =  dataSplit[x];
+		}
+		
+		 String answer = String.valueOf(tree.predictTargetAttributeValue(toSend2));
+		
+		 System.out.println("prediction: " + answer + " Correct: " + dataSplit[dataSplit.length-1]);
+		if(answer.equals(String.valueOf(dataSplit[dataSplit.length-1])))
+			correctAnswers++;
+		}
+		
+
+		
+		double accuracy = (double) correctAnswers/check;
+		System.out.println("ACCURACY: " + accuracy + "   correct answers: " + correctAnswers + " cases: " + check);
+	
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -92,7 +154,7 @@ public class MyPacMan extends Controller<MOVE> {
 		String SUEDIST = String.valueOf(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(),
 				game.getGhostCurrentNodeIndex(GHOST.SUE)));
 
-		// pacman pos
+		// pacman pos 
 		String pacmanPos = String.valueOf(game.getPacmanCurrentNodeIndex());
 
 		// currentScore
@@ -102,6 +164,9 @@ public class MyPacMan extends Controller<MOVE> {
 		String[] toFindMove = { currentlevel, INKYED, blinkyED, PINKYED, SUEED, blinkyDist, INKYDIST, PINKYDIST,
 				SUEDIST, pacmanPos, currentScore };
 
+		
+		
+		
 		String direction = tree.predictTargetAttributeValue(toFindMove);
 
 //		System.out.println("MOVE: " + direction);
