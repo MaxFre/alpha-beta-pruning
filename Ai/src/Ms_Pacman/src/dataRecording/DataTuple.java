@@ -173,17 +173,33 @@ public class DataTuple {
 	public String getDataset() {
 		StringBuilder stringbuilder = new StringBuilder();
 		
+		
+		double normalizedPos = normalizePosition(pacmanPosition);
+		Enum discretePos = DiscreteTag.DiscretizeDouble(normalizedPos);
+		
+		
+		double normalizedScore = normalizeCurrentScore(currentScore);
+		Enum discreteScore = DiscreteTag.DiscretizeDouble(normalizedScore);
+		
+//		double normalizedScore = normalizeCurrentScore(currentScore);
+//		Enum discreteScore = DiscreteTag.DiscretizeDouble(normalizedScore);
+		
+		
+//		System.out.println("prining normalized: "  + discreteScore);
+		
+		
+		
 		stringbuilder.append(this.currentLevel + ";");
 		stringbuilder.append(this.isInkyEdible + ";");
 		stringbuilder.append(this.isBlinkyEdible + ";");	
 		stringbuilder.append(this.isSueEdible + ";");
 		stringbuilder.append(this.isPinkyEdible + ";");
-		stringbuilder.append(this.blinkyDist + ";");
-		stringbuilder.append(this.inkyDist + ";");
-		stringbuilder.append(this.pinkyDist + ";");
-		stringbuilder.append(this.sueDist + ";");
-		stringbuilder.append(this.pacmanPosition + ";");
-		stringbuilder.append(this.currentScore + ";");
+		stringbuilder.append(discretizeDistance(this.blinkyDist) + ";");
+		stringbuilder.append(discretizeDistance(this.inkyDist) + ";");
+		stringbuilder.append(discretizeDistance(this.pinkyDist) + ";");
+		stringbuilder.append(discretizeDistance(this.sueDist) + ";");
+		stringbuilder.append(discretizePosition(pacmanPosition) + ";");
+		stringbuilder.append(discretizeCurrentScore(currentScore) + ";");
 		stringbuilder.append(this.DirectionChosen + ";");
 		
 		

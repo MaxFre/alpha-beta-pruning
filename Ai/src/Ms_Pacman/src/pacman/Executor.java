@@ -42,7 +42,7 @@ import static pacman.game.Constants.*;
 @SuppressWarnings("unused")
 public class Executor
 {	
-	int highestScore = 1100;
+	int highestScore = 400;
 	int howManyTimesAboveLvl0 = 0;
 	static Executor exec;
 	static boolean visual=true;
@@ -60,9 +60,9 @@ public class Executor
 	
 	public void startNew(){
 		
-//		exec.runGameTimed(new DataCollectorController(new MyPacMan()),new StarterGhosts(),visual);
+		exec.runGameTimed(new DataCollectorController(new MyPacMan()),new StarterGhosts(),visual);
 		
-		exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
+//		exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
 	}
 	
 	public static void main(String[] args)
@@ -96,10 +96,10 @@ public class Executor
 		
 		 
 		// ai with recording
-//		exec.runGameTimed(new DataCollectorController(new MyPacMan()),new StarterGhosts(),visual);
+		exec.runGameTimed(new DataCollectorController(new MyPacMan()),new StarterGhosts(),visual);
 		
 		// only ai, no recording
-		exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
+//		exec.runGameTimed(new MyPacMan(), new StarterGhosts(), visual);
 		
 
 		
